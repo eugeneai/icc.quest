@@ -1,0 +1,14 @@
+rdflib
+rdflib-jsonld
+pyramid
+waitress
+# icc.rdfservice
+# icc.restfuldocs
+pyramid_debugtoolbar
+pyramid_chameleon
+Babel
+lingua
+bcrypt
+cryptography
+sendgrid
+mammoth
