@@ -1,0 +1,3 @@
+[submodule "src/icc/quest/templates"]
+	path = src/icc/quest/templates
+	url = https://github.com/eugeneai/isu.college-templates
