@@ -1,10 +1,10 @@
 from __future__ import print_function
+__import__('pkg_resources').declare_namespace(__name__)
 import logging
 import os
-__import__('pkg_resources').declare_namespace(__name__)
+from pkg_resources import resource_filename
 
 logger = logging.getLogger("icc.quest")
-
 
 def includeme(global_config, **settings):
     # from .pyramid import configurator
@@ -23,7 +23,7 @@ def configurator(config, **settings):
     # static_dir = os.path.abspath(static_dir)
 
     config.load_zcml("icc.quest:static-assets.zcml")
-    static_dir = '/home/eugeneai/projects/code/tech-park/quest/icc.quest/src/icc/quest/templates/static'
+    static_dir = resource_filename('icc.quest','templates/static')
     for d in os.listdir(static_dir):
         _name = "/APPSD/" + d
         _path = os.path.join(static_dir, d)

@@ -8,7 +8,7 @@ from pkg_resources import resource_filename
 from icc.mvw.interfaces import IView
 import os
 import os.path
-
+from pkg_resources import resource_filename
 from zope.i18nmessageid import MessageFactory
 import logging
 
@@ -136,8 +136,7 @@ class PageView(View):
     @property
     def storage(self):
         # return self.request.storage
-        return DummyStorage(
-            '/home/eugeneai/projects/code/tech-park/quest/icc.quest/input')
+        return DummyStorage(os.path.abspath(resource_filename('icc.quest','../../../input')))
 
     def main_loader(self):
         filename, physfn, fn, ext = self.pathname(all=True)

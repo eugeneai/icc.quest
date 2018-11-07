@@ -34,7 +34,7 @@ class TestBasic:
         a = DOCX2HTMLAdapter(INPUT)
         a.article()
         tds = a.inputs()
-        print(tds)
+        # print(tds)
         o = open(OUTPUT.format('adapter'), 'w')
         o.write(a.tostring())
         o.close()
