@@ -136,7 +136,7 @@ class PageView(View):
     @property
     def storage(self):
         # return self.request.storage
-        return DummyStorage(os.path.abspath(resource_filename('icc.quest','../../../input')))
+        return DummyStorage(os.path.abspath(resource_filename('icc.quest', '../../../input')))
 
     def main_loader(self):
         filename, physfn, fn, ext = self.pathname(all=True)
