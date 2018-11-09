@@ -1,40 +1,20 @@
 .PHONY: env dev develop install test edit \
 	py pot init-ru update-ru comp-cat \
 	upd-cat setup test setup-requs tests \
-	run-tests gdb-test clean serve server
+	run-tests gdb-test clean serve server \
+    req req-dev elpy
 
-#A source dir of a local C/C++ library to link with
-#TOP_DIR=
 
-#A virtualenv name
-#LPYTHON=
-V=$(HOME)/.pyenv/versions/$(LPYTHON)
-#VB=$(V)/bin
-#PYTHON=$(VB)/$(LPYTHON)
-#ROOT=$(PWD)
-#INI=icc.quest
-#LCAT=src/icc.quest/locale/
+req: requirements.txt
+	pip install -r $<
 
-#LG_DIR="link-grammar"
-#LG_LIB_DIR=$(TOP_DIR)/$(LG_DIR)/.libs
-#LG_HEADERS=$(TOP_DIR)
+req-dev: requirements-devel.txt
+	pip install -r $<
 
-env:
-	[ -d $(V) ] || virtualenv  $(V)
-	$(VB)/easy_install --upgrade pip
+elpy:
+	pip install -r ~/.emacs.d/private/elpy.txt
 
-pre-dev:env #dev-....
-	$(VB)/easy_install pip setuptools
-
-setup:
-	$(PYTHON) setup.py build_ext # -L$(LG_LIB_DIR) -R$(LG_LIB_DIR) -I$(LG_HEADERS)
-	$(PYTHON) setup.py develop
-
-dev:	pre-dev setup-requs setup # upd-cat
-
-develop: dev
-
-install: env comp-cat
+install: reqs comp-cat
 	$(PYTHON) setup.py install
 
 edit:
@@ -77,9 +57,9 @@ clean:
 
 docker: Dockerfile
 	docker build -t eugeneai/icc.quest .
-	
+
 
 server:
 	pserve --reload icc.quest.ini
-	
+
 serve: server

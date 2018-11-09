@@ -8,6 +8,7 @@ from pkg_resources import resource_filename
 from icc.mvw.interfaces import IView
 import os
 import os.path
+from lxml import etree
 from pkg_resources import resource_filename
 from zope.i18nmessageid import MessageFactory
 import logging
@@ -170,5 +171,21 @@ class PageView(View):
 
         return self.respjson()
 
+
+class TestView(PageView):
+    title = 'Test page'
+
     def test_form(self):
+
+        self.content = open(resource_filename(
+            'icc.quest', '../../../input/query1-form.html')).read()
+
+        self.tree = etree.fromstring(self.content)
+
+        self.message = _("Successfully loaded")
+        div = etree.Element('div')
+        body = self.tree.xpath("//body")[0]
+        for child in body:
+            div.append(child)
+        self.content = etree.tostring(div, pretty_print=True, encoding=str)
         return self.response()

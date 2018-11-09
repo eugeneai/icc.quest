@@ -85,7 +85,7 @@
    <view
        route_name="test"
        renderer="icc.quest:templates/test.pt"
-       view=".pyramid.PageView"
+       view=".pyramid.TestView"
        attr="test_form"
        />
 
