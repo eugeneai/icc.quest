@@ -27,7 +27,8 @@ RUN set -e;\
     pip install -U pip setuptools
 
 RUN set -e;\
-    git clone --recursive  https://github.com/eugeneai/icc.quest;\
+    echo ;\
+    git clone --recursive https://github.com/eugeneai/icc.quest;\
     cd ~/icc.quest/; \
     eval "$(pyenv init -)"; \
     eval "$(pyenv virtualenv-init -)"; \
@@ -35,3 +36,15 @@ RUN set -e;\
     pyenv shell icc.quest; \
     pip install -r requirements-devel.txt; \
     python setup.py develop
+
+# Install AdminLTE interface template
+WORKDIR ${HOME}/icc.quest
+RUN yay -Sy npm --noconfirm; yes | yay -Scc
+RUN set -e;\
+    eval "$(pyenv init -)"; \
+    eval "$(pyenv virtualenv-init -)"; \
+    pyenv rehash;\
+    pyenv local icc.quest
+
+RUN cd $(pyenv prefix)/src/isu.webapp/src/isu/webapp; \
+    ./install-admin-lte.sh
