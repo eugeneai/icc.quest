@@ -33,6 +33,5 @@ def configurator(config, **settings):
             _name, _path
         ))
 
-    # config.load_zcml("isu.webapp:configure.zcml")
     config.load_zcml("icc.quest:configure.zcml")
     # config.add_static_view(path='icc.quest/templates/static', name='/APPSD')

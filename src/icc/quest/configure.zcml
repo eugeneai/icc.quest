@@ -78,4 +78,15 @@
        name="commit"
        request_method="POST"
        />
+   <route
+       name="test"
+       pattern="/test/"
+       />
+   <view
+       route_name="test"
+       renderer="icc.quest:templates/test.pt"
+       view=".pyramid.PageView"
+       attr="test_form"
+       />
+
 </configure>

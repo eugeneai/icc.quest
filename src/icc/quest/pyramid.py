@@ -169,3 +169,6 @@ class PageView(View):
         self.storage.save_file(body_file, filename, replace=True)
 
         return self.respjson()
+
+    def test_form(self):
+        return self.response()
