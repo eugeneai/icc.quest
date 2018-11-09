@@ -30,14 +30,35 @@ class TestBasic:
         o.write(etree.tostring(html, pretty_print=True, encoding=str))
         o.close()
 
+    def tearDown(self):
+        pass
+
+
+class TestExt:
+
+    def setUp(self):
+        self.a = DOCX2HTMLAdapter(INPUT)
+
+    def out(self, name, tree, stdout=False):
+        o = open(OUTPUT.format(name), 'w')
+        if isinstance(tree, DOCX2HTMLAdapter):
+            s = tree.tostring()
+        else:
+            s = etree.tostring(tree, encoding=str,
+                               pretty_print=True)
+        o.write(s)
+        o.close()
+        if stdout:
+            print('OUT {}:{}'.format(name, s))
+
     def test_adapter(self):
-        a = DOCX2HTMLAdapter(INPUT)
+        a = self.a
         a.article()
         tds = a.inputs()
         # print(tds)
-        o = open(OUTPUT.format('adapter'), 'w')
-        o.write(a.tostring())
-        o.close()
+        self.out('adapter', a)
 
-    def tearDown(self):
-        pass
+    def test_form(self):
+        a = self.a
+        f = a.as_form()
+        self.out('form', f, stdout=False)

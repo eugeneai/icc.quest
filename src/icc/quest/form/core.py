@@ -12,15 +12,19 @@ class DOCX2HTMLAdapter:
     def __init__(self, filename):
         """Constructs the adapter object
         ``filename`` is full path to the file or a stream of docx
-        tmeplate
+        template
         """
         self.filename = filename
         self.tree = None
+        self.state = {}
 
     def lazy_load(self):
         fn = self.filename
         if self.tree is None:
             self.tree = convert(fn, as_tree=True, body=True)
+
+        self.state['loaded'] = True
+
         return self.tree
 
     def article(self):
@@ -35,6 +39,7 @@ class DOCX2HTMLAdapter:
                                     })
         for el in bchl:
             article.append(el)
+        self.state['article'] = True
         return article
 
     def inputs(self):
@@ -53,21 +58,25 @@ class DOCX2HTMLAdapter:
             if name == 'school':
                 value = 'МКУ ЦБ № 4'
 
-            if 'disabled' not in options:
-                inp = etree.SubElement(td, 'input')
-                has_inputs = True
-                if value != '':
-                    inp.set('value', value)
-            else:
+            inp = etree.SubElement(td, 'input')
+            has_inputs = True
+            if value != '':
+                inp.set('value', value)
+
+            if 'disabled' in options:
                 if value != '':
                     td.text = value
-                    continue
+                inp.set('type', 'hidden')
+
             inp.set('placeholder', defs)
             inp.set('style', 'width:231px;')
             inp.set('name', name)
+            inp.set('id', name+'-input')
+            cls = inp.get('class', '') + ' query-input'
+            inp.set('class', cls.strip())
             inp.set('data-field-name', type_)
-            if 'disabled' in options:
-                inp.set('disabled', 'disabled')
+            # if 'disabled' in options:
+            #     inp.set('disabled', 'disabled')
             if 'hidden' in options:
                 inp: set('type', 'hidden')
             else:
@@ -78,12 +87,88 @@ class DOCX2HTMLAdapter:
             btn = etree.Element('button')
             btn.text = 'Отправить'
             btn.set('class', "btn btn-primary")
+            btn.set('id', 'query-send-button')
             emb.insert(emb.index(tbl)+1, btn)
+        self.state['inputs'] = True
         return tds
 
-    def tostring(self, **kwargs):
+    def as_form(self):
+        self.lazy_load()
+        tree_copy = self.tostring(pretty_print=False)
+        old_tree = etree.fromstring(tree_copy)
+        if not self.state.get('inputs', False):
+            self.inputs()
+
+        # TODO: select by class 'query-input'
+        inputs = self.tree.xpath('//input')
+
+        trq = self.common_parent(inputs)
+        assert(trq.tag == 'tr'), "table is too complex"
+        tr = trq
+        tr.set('data-type-row', 'inputs')
+        ptr = tr.getparent()
+        th = ptr[0]
+        assert(th != tr), "table without header part"
+
+        headers = ptr.xpath(".//tr[1]/td|th")
+        # headers = [h.text for h in headers]
+        assert(len(headers) == len(inputs))
+
+        labels = [' '.join(h.xpath('./descendant::*/text()')) for h in headers]
+
+        tablep = tr.getparent()
+        while tablep.tag != 'table':
+            tablep = tablep.getparent()
+        parent = tablep.getparent()
+
+        form = etree.Element('form')
+        tablep.addnext(form)
+        for i, h in zip(inputs, labels):
+            self.form_group(form, i, h)
+
+        btn = parent.xpath('.//button[@id="query-send-button"]')
+        form.append(btn[0])
+
+        parent.remove(tablep)
+        answer = self.tree
+        self.tree = old_tree
+        return answer
+
+    def form_group(self, form, input, label_text):
+        div = etree.SubElement(form, 'div')
+        div.set('class', 'form-group')
+        input_id = input.get('id')
+        label = etree.SubElement(div, 'label', attrib={'for': input_id})
+        label.text = label_text
+        div.append(input)
+        # TODO: Add  <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+        cls = input.get('class').split()
+        if not 'form-control' in cls:
+            cls.append('form-control')
+        input.set('class', ' '.join(cls))
+
+    def common_parent(self, elements):
+        els = elements
+        while True:
+            if not els:
+                return None
+            pe = els[0]
+            for el in els:
+                if (pe != el):
+                    break
+            else:
+                return pe
+            newels = []
+            for el in els:
+                newels.append(el.getparent())
+            els = newels
+
+    def tostring(self, tree=None, **kwargs):
+        if tree is None:
+            self.lazy_load()
+            tree = self.tree
         d = {}
         d.update(kwargs)
         d.setdefault("encoding", str)
         d.setdefault("pretty_print", True)
-        return etree.tostring(self.tree, **d)
+        return etree.tostring(tree, **d)

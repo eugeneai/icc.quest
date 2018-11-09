@@ -1,0 +1,52 @@
+<html>
+  <body>
+    <p style="text-align:center;text-indent: 0em;">
+      <strong>Муниципальное казенное учреждение</strong>
+      <br/>
+      <strong>Центральная бухгалтерия № 4</strong>
+      <br/>
+      <strong>по обеспечению деятельности</strong>
+      <br/>
+      <strong>муниципальных образовательных учреждений г. Иркутска</strong>
+      <br/>
+      <strong>(МКУ Центральная бухгалтерия № 4)</strong>
+      <br/>
+      <strong>664031, г. Иркутск, ул. Донская, 19«А»</strong>
+      <br/>
+      <strong>Тел./факс +7 (395) 2 23-30-74</strong>
+    </p>
+    <p style="text-align:right;text-indent: 0em;">Председателю ГК Профсоюза<br/>М.Г.Петровой</p>
+    <p style="text-align:center;text-indent: 0em;">Информация об общей численности и численности членов профсоюза,<br/>работающих в образовательных учреждениях Октябрьского округа по<br/>состоянию на 01.10.2018 г.</p>
+    <form>
+      <div class="form-group">
+        <label for="school-input">Наименование образовательного учреждения</label>
+        <input value="МКУ ЦБ № 4" type="text" placeholder=":school:str:disabled" style="width:231px;" name="school" id="school-input" class="query-input form-control" data-field-name="str"/>
+      </div>
+      <div class="form-group">
+        <label for="total-input">Общая численность работающих (без совместителей)</label>
+        <input placeholder=":total:int" style="width:231px;" name="total" id="total-input" class="query-input form-control" data-field-name="int" type="text"/>
+      </div>
+      <div class="form-group">
+        <label for="prof-input">Членство в профсоюзе</label>
+        <input placeholder=":prof:int" style="width:231px;" name="prof" id="prof-input" class="query-input form-control" data-field-name="int" type="text"/>
+      </div>
+      <div class="form-group">
+        <label for="nonwork-input">Численность временно не работающих *)</label>
+        <input placeholder=":nonwork:int" style="width:231px;" name="nonwork" id="nonwork-input" class="query-input form-control" data-field-name="int" type="text"/>
+      </div>
+      <div class="form-group">
+        <label for="director-input">Руководитель (да/нет)**)</label>
+        <input placeholder=":director:bool" style="width:231px;" name="director" id="director-input" class="query-input form-control" data-field-name="bool" type="text"/>
+      </div>
+      <button class="btn btn-primary" id="query-send-button">Отправить</button>
+    </form>
+    <p>*) находящиеся в отпуске по беременности и родам, в отпуска по уходу за ребенком до 3 лет, в длительном отпуске сроком до одного года.<br/>**) указать членство в профсоюзе директоров общеобразовательных учреждений, учреждений дополнительного образования, заведующих детскими садами.</p>
+    <table>
+      <tr>
+        <td>Начальник МКУ ЦБ № 4</td>
+        <td/>
+        <td style="text-align:right;text-indent: 0em;">Л. Н. Острикова</td>
+      </tr>
+    </table>
+  </body>
+</html>
