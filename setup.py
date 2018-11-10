@@ -97,5 +97,8 @@ setup(
     entry_points="""\
         [paste.app_factory]
         main=isu.webapp.app:main
+        [console_scripts]
+        initialize_tutorial_db=icc.quest.alchemy.initialize_db:main'
+        ],
     """,
 )

@@ -13,6 +13,10 @@ cryptography
 sendgrid
 mammoth
 #secretary
+pyramid_tm
+sqlalchemy
+zope.sqlalchemy
+psycopg2
 
 -e git+https://github.com/isu-enterprise/isu.enterprise#egg=isu.enterprise
 -e git+https://github.com/isu-enterprise/isu.webapp#egg=isu.webapp

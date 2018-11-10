@@ -22,7 +22,7 @@ def configurator(config, **settings):
 
     # static_dir = os.path.join(storage.base_path, static_dir)
     # static_dir = os.path.abspath(static_dir)
-
+    config.iclude("icc.quest.alchemy")
     config.load_zcml("icc.quest:static-assets.zcml")
     static_dir = resource_filename('icc.quest', 'templates/static')
     for d in os.listdir(static_dir):
