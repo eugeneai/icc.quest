@@ -29,3 +29,13 @@ Save postgres password to install it later in the application.
 ### Application
 ```sell
 ```
+
+## SQLalchemy Refereces
+
+Tutorial: https://docs.sqlalchemy.org/en/latest/orm/tutorial.html
+
+Column types: https://docs.sqlalchemy.org/en/latest/core/type_basics.html
+
+Pyramid SQLalchemy outline: https://docs.pylonsproject.org/projects/pyramid/en/latest/quick_tutorial/databases.html
+
+Short tutorial: https://www.pythoncentral.io/introductory-tutorial-python-sqlalchemy/
