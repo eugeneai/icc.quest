@@ -18,8 +18,10 @@ from .models import (
 
 def usage(argv):
     cmd = os.path.basename(argv[0])
-    print('usage: %s <config_uri>\n'
-          '(example: "%s development.ini")' % (cmd, cmd))
+    print('usage: %s <config_uri> [ -c ] \n'
+          '(example: "%s development.ini") \n\n'
+          'Option -c tries to create database\n'
+          'with the same user if it not exists.\n' % (cmd, cmd))
     sys.exit(1)
 
 
@@ -65,12 +67,15 @@ def remove_db(URI):
 
 def main(argv=sys.argv, URI=None, create_db=False, **kwargs):
     if URI is None:
-        if len(argv) != 2:
+        if len(argv) < 2:
             usage(argv)
+        else:
             config_uri = argv[1]
             setup_logging(config_uri)
             settings = get_appsettings(config_uri)
             engine = engine_from_config(settings, 'sqlalchemy.')
+            if '-c' in argv:
+                create_db = True
     else:
         engine = create_engine(URI, **kwargs)
     DBSession.configure(bind=engine)

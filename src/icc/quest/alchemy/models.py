@@ -28,14 +28,14 @@ Base = declarative_base()
 
 @generic_repr
 class InstitutionType(Base):
-    __tablename__ = 'institution_type'
+    __tablename__ = 'institution_types'
     uid = Column(UUIDType, primary_key=True)
     title = Column(String(length=10), unique=True)
 
 
 @generic_repr
 class Institution(Base):
-    __tablename__ = 'institution'
+    __tablename__ = 'institutions'
     uid = Column(UUIDType, primary_key=True)
     title = Column(String(200), unique=True)
     short_title = Column(String(length=50), unique=True)
@@ -46,7 +46,7 @@ class Institution(Base):
     head_email = Column(EmailType, unique=True)
     query_email = Column(EmailType, unique=True)
 
-    inst_type_uid = Column(Integer, ForeignKey('institution_type.uid'))
+    inst_type_uid = Column(UUIDType, ForeignKey('institution_types.uid'))
     inst_type = relationship(InstitutionType,
                              back_populates="institutions")
 
