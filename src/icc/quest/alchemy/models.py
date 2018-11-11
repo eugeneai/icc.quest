@@ -12,6 +12,8 @@ from sqlalchemy import (
     ForeignKey
 )
 
+from sqlalchemy.dialects.postgresql import ARRAY
+
 from sqlalchemy.ext.declarative import declarative_base
 
 from sqlalchemy.orm import (
@@ -64,13 +66,13 @@ class Institution(Base):
     tin = Column(BigInteger, unique=True)  # ИНН
     rrc = Column(BigInteger, unique=True)  # КПП
     account_details = Column(Text, unique=False)
-    datails = Column(Text, unique=False)
+    details = Column(Text, unique=False)
     head_name = Column(String(length=50), unique=False)
     head_email = Column(EmailType, unique=True)
     query_email = Column(EmailType, unique=True)
-    tel1 = Column(PhoneNumberType(region=REGION, max_length=12), unique=True)
-    tel2 = Column(PhoneNumberType(region=REGION, max_length=12), unique=True)
-    mobile = Column(PhoneNumberType(region=REGION, max_length=12), unique=True)
+    phones = ARRAY(
+        Column(PhoneNumberType(region=REGION, max_length=12), unique=True),
+        dimensions=1)
 
     inst_type_uid = Column(UUIDType, ForeignKey('institution_types.uid'))
     inst_type = relationship(InstitutionType, back_populates="institutions")
@@ -96,6 +98,11 @@ class Institution(Base):
 
         if dummy:
             return inp
+
+        Session = kwargs.get("session_maker", None)
+        if Session is None:
+            raise ValueError('no session_maker parameter supplied')
+        session = Session()
         for row in inp:
             title, short_title, tin, rrc, \
                 account_details, details, head_name = row
@@ -136,13 +143,7 @@ class Institution(Base):
                     ps.append(pn)
 
             phones = ps
-            tel1 = tel2 = None
-            if phones and len(phones) > 1:
-                tel1 = phone[0]
-                tel2 = phone[1]
-            else:
-                tel1 = phone[0]
-                tel2 = None
+
             det = None
             while True:
                 det = details.replace(">>", ">")
@@ -151,3 +152,6 @@ class Institution(Base):
                     break
                 details = det
             print(short_title, details, "\n------------")
+            session.add(
+                Institution(phones=phones)
+            )
