@@ -8,6 +8,9 @@ import os.path
 from icc.quest.form.core import DOCX2HTMLAdapter
 from icc.quest.alchemy.initialize_db import main as create
 from icc.quest.alchemy.initialize_db import remove_db
+from icc.quest.alchemy import Institution
+
+ECHO = False
 
 INPUT = os.path.abspath('input/query1.docx')
 OUTPUT = os.path.abspath('input/query1-{}.html')
@@ -66,12 +69,25 @@ class TestExt:
         f = a.as_form()
         self.out('form', f, stdout=False)
 
+    def test_csv_reader(self):
+        if os.system != 'nt':
+            file_name = "/etc/passwd"
+            iter = Institution.load_from_csv(file_name,
+                                             delimiter=":", dummy=True)
+            for row in iter:
+                if row[0] == 'root':
+                    return
+            else:
+                assert True, 'Root not found'
+        else:
+            print('WARNING: Windows platform test is not implemented')
+
 
 class TestDatabase:
 
     def test_create_test_database(self):
         create(URI=DBURI,
-               create_db=True, echo=True)
+               create_db=True, echo=ECHO)
 
     def test_remove_test_database(self):
         remove_db(URI=DBURI)

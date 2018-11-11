@@ -1,5 +1,6 @@
 # SQL Alchemy subsystem
 from pyramid.security import Allow, Everyone
+import csv
 
 from sqlalchemy import (
     Column,
@@ -48,12 +49,26 @@ class Institution(Base):
     query_email = Column(EmailType, unique=True)
 
     inst_type_uid = Column(UUIDType, ForeignKey('institution_types.uid'))
-    inst_type = relationship(InstitutionType,
-                             back_populates="institutions")
+    inst_type = relationship(InstitutionType, back_populates="institutions")
 
-# class Root(object):
-#     __acl__ = [(Allow, Everyone, 'view'),
-#                (Allow, 'group:editors', 'edit')]
+    @classmethod
+    def default_emails(cls, obj):
+        if isinstance(obj, Institution):
+            print(obj)
+        else:
+            raise ValueError('not an Institution instance')
 
-#     def __init__(self, request):
-#         pass
+    @classmethod
+    def load_from_csv(cls, file_name, **kwargs):
+        inp = file_name
+        if isinstance(inp, str):
+            inp = open(inp)
+        dummy = kwargs.setdefault("dummy", False)
+        del kwargs["dummy"]
+        if hasattr(inp, 'write'):
+            inp = csv.reader(inp, **kwargs)
+
+        assert(hasattr(inp, "dialect"))
+
+        if dummy:
+            return inp

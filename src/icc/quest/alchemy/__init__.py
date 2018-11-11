@@ -2,7 +2,8 @@
 from .core import *
 from pyramid.config import Configurator
 from sqlalchemy import engine_from_config
-from .models import DBSession, Base
+from .models import DBSession, Base, Institution, InstitutionType
+
 
 def includeme(global_config, **settings):
     engine = engine_from_config(settings, 'sqlalchemy.')
