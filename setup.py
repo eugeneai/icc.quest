@@ -98,7 +98,6 @@ setup(
         [paste.app_factory]
         main=isu.webapp.app:main
         [console_scripts]
-        initialize_tutorial_db=icc.quest.alchemy.initialize_db:main'
-        ],
+        init_quest_db=icc.quest.alchemy.initialize_db:main
     """,
 )

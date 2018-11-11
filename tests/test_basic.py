@@ -6,10 +6,13 @@ from docx2html import convert
 import os.path
 
 from icc.quest.form.core import DOCX2HTMLAdapter
+from icc.quest.alchemy.initialize_db import main as create
+from icc.quest.alchemy.initialize_db import remove_db
 
 INPUT = os.path.abspath('input/query1.docx')
 OUTPUT = os.path.abspath('input/query1-{}.html')
 
+DBURI = 'postgresql+psycopg2://postgres:quest312@quest-postgres.isclan.ru/quest-test'
 # @SkipTest
 
 
@@ -62,3 +65,13 @@ class TestExt:
         a = self.a
         f = a.as_form()
         self.out('form', f, stdout=False)
+
+
+class TestDatabase:
+
+    def test_create_test_database(self):
+        create(URI=DBURI,
+               create_db=True, echo=True)
+
+    def test_remove_test_database(self):
+        remove_db(URI=DBURI)

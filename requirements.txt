@@ -15,8 +15,10 @@ mammoth
 #secretary
 pyramid_tm
 sqlalchemy
+sqlalchemy-utils
 zope.sqlalchemy
-psycopg2
+# psycopg2-binary
+https://github.com/psycopg/psycopg2/archive/2_7_6.tar.gz
 
 -e git+https://github.com/isu-enterprise/isu.enterprise#egg=isu.enterprise
 -e git+https://github.com/isu-enterprise/isu.webapp#egg=isu.webapp
