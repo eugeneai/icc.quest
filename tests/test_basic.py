@@ -14,6 +14,7 @@ ECHO = False
 
 INPUT = os.path.abspath('input/query1.docx')
 OUTPUT = os.path.abspath('input/query1-{}.html')
+REQISITES = os.path.abspath('input/requisites.csv')
 
 DBURI = 'postgresql+psycopg2://postgres:quest312@quest-postgres.isclan.ru/quest-test'
 # @SkipTest
@@ -69,6 +70,17 @@ class TestExt:
         f = a.as_form()
         self.out('form', f, stdout=False)
 
+    def test_regexp_email_phone(self):
+        from icc.quest.alchemy.models import RE_EMAIL, RE_PHONE
+        import re
+        rg = re.compile("[a-zA-Z0-9]*")
+        assert rg.match("integer32") is not None
+        assert RE_EMAIL.search("napoleon@yandex.ru") is not None
+        assert RE_PHONE.search("79148701234") is not None
+        assert RE_PHONE.search("89148701234") is not None
+        assert RE_PHONE.search("+79148701234") is not None
+        assert RE_PHONE.search("00-00-00") is not None
+
     def test_csv_reader(self):
         if os.system != 'nt':
             file_name = "/etc/passwd"
@@ -82,12 +94,17 @@ class TestExt:
         else:
             print('WARNING: Windows platform test is not implemented')
 
+    def test_csv_requisites(self):
+        iter = Institution.load_from_csv(REQISITES, delimiter=';')
+
 
 class TestDatabase:
 
+    @SkipTest
     def test_create_test_database(self):
         create(URI=DBURI,
                create_db=True, echo=ECHO)
 
+    @SkipTest
     def test_remove_test_database(self):
         remove_db(URI=DBURI)
