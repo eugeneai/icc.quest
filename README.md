@@ -28,6 +28,13 @@ Save postgres password to install it later in the application.
 
 or use container linking with `<TODO>`.
 
+#### Optional install pgAdmin4, the WEB application for administering PostgreSQL servers
+
+```shell
+docker pull dpage/pgadmin4
+docker run -p 8089:80  --network=UUUU-network --add-host=postgres 2001:db8:XXXX:Y00Z::2 -e "PGADMIN_DEFAULT_EMAIL=user@example.com" -e "PGADMIN_DEFAULT_PASSWORD=SuperSecret" -d dpage/pgadmin4
+```
+
 ### Application inside DOCKER
 ```sell
 ```
