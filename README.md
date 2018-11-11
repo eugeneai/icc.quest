@@ -28,9 +28,21 @@ Save postgres password to install it later in the application.
 
 or use container linking with `<TODO>`.
 
-### Application
+### Application inside DOCKER
 ```sell
 ```
+
+### Application running from command-line
+
+#### Initialization of the database
+
+Go to project package folder (`icc.quest`), run
+
+```shell
+init_quest_db icc.quest.ini
+```
+
+You might need to edit `icc.quest.ini` first to set up database connection URI in `sqlalchemy.url` in `[app:main]` section.
 
 ## SQLalchemy Refereces
 
