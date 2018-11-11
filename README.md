@@ -23,8 +23,10 @@ Save postgres password to install it later in the application.
 
 2. create DNS record with address of the server.
 ```text
-2001:db8:XXXX:Y00Z::2 pistgres.example.com
+2001:db8:XXXX:Y00Z::2 postgres.example.com
 ```
+
+or use container linking with `<TODO>`.
 
 ### Application
 ```sell
