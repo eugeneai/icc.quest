@@ -7,7 +7,7 @@ The web-application allows an organization to rapidly organize surveys among sub
 Install new docker network.
 
 ```bash
-docker network create --ipv6 --subnet=2001:db8:XXXX:Y00Z::/64 UUUU-network
+docker network create --ipv6 --subnet=2001:db8:XXXX:Y00Z::/64 quest-network
 ```
 XXXX, Y,Z - Hexadecimal numbers of network wit prefix, e.g. /64.
 
@@ -16,7 +16,7 @@ XXXX, Y,Z - Hexadecimal numbers of network wit prefix, e.g. /64.
 1. Install server in the network
 ```shell
 docker volume create quest-pgdata  # A Host based volume of the data to be stored in
-docker run --name quest-postgres --ip6 2001:db8:XXXX:Y00Z::2 --network=UUUU-network -v quest-pgdata:/var/lib/postgresql/data/pgdata -e POSTGRES_PASSWORD=<postgres-password> -d postgres:11.1
+docker run --name quest-postgres --ip6 2001:db8:XXXX:Y00Z::2 --network=quest-network -v quest-pgdata:/var/lib/postgresql/data/pgdata -e POSTGRES_PASSWORD=<postgres-password> -d postgres:11.1
 ```
 
 Save postgres password to install it later in the application.
@@ -32,8 +32,12 @@ or use container linking with `<TODO>`.
 
 ```shell
 docker pull dpage/pgadmin4
-docker run -p 8089:80  --network=UUUU-network --add-host=postgres 2001:db8:XXXX:Y00Z::2 -e "PGADMIN_DEFAULT_EMAIL=user@example.com" -e "PGADMIN_DEFAULT_PASSWORD=SuperSecret" -d dpage/pgadmin4
+docker run -p 8089:80  --name=pgadmin-quest --network=quest-network --add-host=postgres:2001:db8:XXXX:Y00Z::2 -e "PGADMIN_DEFAULT_EMAIL=user@example.com" -e "PGADMIN_DEFAULT_PASSWORD=SuperSecret" -d dpage/pgadmin4
 ```
+
+So, in the login screen at `http://yoursite.example.com:8089` one must login with the provided `user@example.com` and the password.
+The pgAdmin4 user interface served with the unencrypted protocol `HTTP` and password will be clearly seen.
+
 
 ### Application inside DOCKER
 ```sell
