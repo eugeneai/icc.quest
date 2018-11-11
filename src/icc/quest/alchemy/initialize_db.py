@@ -18,10 +18,14 @@ from .models import (
 
 def usage(argv):
     cmd = os.path.basename(argv[0])
-    print('usage: %s <config_uri> [ -c ] \n'
+    print('usage: %s <config_uri> [ -cv ] \n'
           '(example: "%s development.ini") \n\n'
           'Option -c tries to create database\n'
-          'with the same user if it not exists.\n' % (cmd, cmd))
+          'with the same user if it not exists.\n'
+          'Option -v add \'echo\' parameter to \n'
+          ''
+          '' % (cmd, cmd)
+          )
     sys.exit(1)
 
 
@@ -73,7 +77,9 @@ def main(argv=sys.argv, URI=None, create_db=False, **kwargs):
             config_uri = argv[1]
             setup_logging(config_uri)
             settings = get_appsettings(config_uri)
-            engine = engine_from_config(settings, 'sqlalchemy.')
+            if '-v' in argv:
+                kwargs["echo"] = True
+            engine = engine_from_config(settings, 'sqlalchemy.', **kwargs)
             if '-c' in argv:
                 create_db = True
     else:

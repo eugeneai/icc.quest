@@ -20,6 +20,7 @@ from sqlalchemy.orm import (
 
 from zope.sqlalchemy import ZopeTransactionExtension
 from sqlalchemy_utils import EmailType, UUIDType, generic_repr
+from uuid import uuid1 as _uuid
 
 DBSession = scoped_session(
     sessionmaker(extension=ZopeTransactionExtension()))
@@ -29,14 +30,14 @@ Base = declarative_base()
 @generic_repr
 class InstitutionType(Base):
     __tablename__ = 'institution_types'
-    uid = Column(UUIDType, primary_key=True)
+    uid = Column(UUIDType, primary_key=True, default=_uuid)
     title = Column(String(length=10), unique=True)
 
 
 @generic_repr
 class Institution(Base):
     __tablename__ = 'institutions'
-    uid = Column(UUIDType, primary_key=True)
+    uid = Column(UUIDType, primary_key=True, default=_uuid)
     title = Column(String(200), unique=True)
     short_title = Column(String(length=50), unique=True)
     tin = Column(BigInteger, unique=True)  # ИНН
