@@ -4,6 +4,7 @@ import transaction
 
 from sqlalchemy import engine_from_config, create_engine, exc
 from sqlalchemy_utils import database_exists, create_database, drop_database
+from sqlalchemy.orm import sessionmaker
 
 from pyramid.paster import (
     get_appsettings,
@@ -13,6 +14,8 @@ from pyramid.paster import (
 from .models import (
     DBSession,
     Base,
+    InstitutionType,
+    Institution
 )
 
 
@@ -46,21 +49,30 @@ def create_all(engine, create_db=False):
         create_database(engine.url)
     Base.metadata.create_all(engine)
 
-    # try:
-    #     Base.metadata.create_all(engine)
-    # except exc.OperationalError as e:
-    #     import sys
-    #     exc_info = sys.exc_info()
-    #     msg = str(e.orig)
-    #     f1 = msg.find('database')
-    #     if f1 >= 0:
-    #         f1 += len('database')
-    #         f2 = msg.find('does not exist')
-    #         if f2 >= 0 and f2 > f1 and _first:
-    #             create_db(engine)
-    #             return create_all(engine, _first=False)
-    #     # raise exc_info[1], None, exc_info[2]
-    #     raise
+
+SESSION = None
+
+
+def fill_in_basics():
+    sess = SESSION()
+
+    inst_type = sess.query(InstitutionType).first()
+    if inst_type is None:  # Suppose Database is empty
+        sess.add_all([
+            InstitutionType(
+                title="Муниципальное казенное дошкольное образовательное учреждение",
+                abbreviation="МБДОУ"),
+            InstitutionType(
+                title="Муниципальное казенное образовательное учреждение (средняя общеобразовательная школа)",
+                abbreviation="МБОУ СОШ"),
+            InstitutionType(
+                title="Муниципальное казенное образовательное учреждение (гимназия)",
+                abbreviation="МБОУ ГИМНАЗИЯ"),
+            InstitutionType(
+                title="Муниципальное казенное образовательное учреждение (лицей)",
+                abbreviation="МБОУ ЛИЦЕЙ")
+        ])
+        sess.commit()
 
 
 def remove_db(URI):
@@ -70,6 +82,7 @@ def remove_db(URI):
 
 
 def main(argv=sys.argv, URI=None, create_db=False, **kwargs):
+    global SESSION
     if URI is None:
         if len(argv) < 2:
             usage(argv)
@@ -86,7 +99,8 @@ def main(argv=sys.argv, URI=None, create_db=False, **kwargs):
         engine = create_engine(URI, **kwargs)
     DBSession.configure(bind=engine)
     create_all(engine, create_db=create_db)
-    # with transaction.manager:
-    #     model = Page(title='Root', body='<p>Root</p>')
-    #     DBSession.add(model)
+
+    SESSION = sessionmaker(bind=engine)
+    fill_in_basics()
+
     return engine

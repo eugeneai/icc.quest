@@ -49,7 +49,10 @@ REGION = "RU"
 class InstitutionType(Base):
     __tablename__ = 'institution_types'
     uid = Column(UUIDType, primary_key=True, default=_uuid)
-    title = Column(String(length=10), unique=True)
+    title = Column(String(length=255), unique=True)
+    abbreviation = Column(String(length=50), unique=True)
+
+    institutions = relationship("Institution", back_populates="inst_type")
 
 
 @generic_repr

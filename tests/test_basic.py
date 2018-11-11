@@ -100,11 +100,11 @@ class TestExt:
 
 class TestDatabase:
 
-    @SkipTest
+    # @SkipTest
     def test_create_test_database(self):
         create(URI=DBURI,
                create_db=True, echo=ECHO)
 
-    @SkipTest
+    # @SkipTest
     def test_remove_test_database(self):
         remove_db(URI=DBURI)
