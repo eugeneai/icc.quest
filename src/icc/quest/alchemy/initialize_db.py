@@ -82,14 +82,16 @@ def fill_in_basics():
                 abbreviation="МБОУ ЛИЦЕЙ")
         }
         sess.add_all(list(type_dict.values()))
-        sess.commit()
         inst = sess.query(Institution).first()
         if inst is not None:
             raise RuntimeError(
                 'organizations already exist, but their types aren\'t')
 
-        for inst in Institution.load_from_csv(csv):
+        for inst in Institution.load_from_csv(csv,
+                                              delimiter=';',
+                                              inst_types=type_dict):
             sess.add(inst)
+            # print(inst)
         sess.commit()
 
 

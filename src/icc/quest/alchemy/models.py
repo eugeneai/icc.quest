@@ -61,16 +61,16 @@ class InstitutionType(Base):
 class Institution(Base):
     __tablename__ = 'institutions'
     uid = Column(UUIDType, primary_key=True, default=_uuid)
-    title = Column(String(200), unique=True)
-    short_title = Column(String(length=50), unique=True)
+    title = Column(String(256), unique=True)
+    short_title = Column(String(length=256), unique=True)
     tin = Column(BigInteger, unique=True)  # ИНН
-    rrc = Column(BigInteger, unique=True)  # КПП
+    rrc = Column(BigInteger, unique=False)  # КПП
     account_details = Column(Text, unique=False)
     details = Column(Text, unique=False)
-    head_name = Column(String(length=50), unique=False)
+    head_name = Column(String(length=256), unique=False)
     head_email = Column(EmailType, unique=True)
     query_email = Column(EmailType, unique=True)
-    phones = Column(String(length=50), unique=False)
+    phones = Column(String(length=255), unique=False)
 
     inst_type_uid = Column(UUIDType, ForeignKey('institution_types.uid'))
     inst_type = relationship(InstitutionType, back_populates="institutions")
@@ -87,8 +87,13 @@ class Institution(Base):
         inp = file_name
         if isinstance(inp, str):
             inp = open(inp)
+
         dummy = kwargs.setdefault("dummy", False)
         del kwargs["dummy"]
+        type_dict = kwargs.get("inst_types", None)
+        assert(type_dict is not None)
+        del kwargs['inst_types']
+
         if hasattr(inp, 'write'):
             inp = csv.reader(inp, **kwargs)
 
@@ -101,8 +106,6 @@ class Institution(Base):
         # if Session is None:
         #     raise ValueError('no session_maker parameter supplied')
         # session = Session()
-
-        type_dict = kwargs.get("inst_types", None)
 
         for row in inp:
             title, short_title, tin, rrc, \
