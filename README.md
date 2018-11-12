@@ -38,6 +38,11 @@ docker run -p 8089:80  --name=pgadmin-quest --network=quest-network --add-host=p
 So, in the login screen at `http://yoursite.example.com:8089` one must login with the provided `user@example.com` and the password.
 The pgAdmin4 user interface served with the unencrypted protocol `HTTP` and password will be clearly seen.
 
+#### ... or phpPgAdmin 
+```shell
+docker run -i -d -p 8087:80 -e APACHE_SERVERNAME=pg.example.com -e POSTGRES_HOST=postgres -e POSTGRES_PORT=5432 -v /etc/localtime:/etc/localtime --network=quest-network --add-host postgres:2001:db8:XXX:Y00Z::2 --ip6 2001:db8:XXXX:Y00Z::100:3 jacksoncage/phppgadmin
+```
+
 
 ### Application inside DOCKER
 ```sell
