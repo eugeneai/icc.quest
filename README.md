@@ -38,6 +38,7 @@ docker run -p 8089:80  --name=pgadmin-quest --network=quest-network --add-host=p
 So, in the login screen at `http://yoursite.example.com:8089` one must login with the provided `user@example.com` and the password.
 The pgAdmin4 user interface served with the unencrypted protocol `HTTP` and password will be clearly seen.
 
+Web-based administrator console `phpPgAdmin` does not support postgresl-11.1
 
 ### Application inside DOCKER
 ```sell
