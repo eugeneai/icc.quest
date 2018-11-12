@@ -70,9 +70,7 @@ class Institution(Base):
     head_name = Column(String(length=50), unique=False)
     head_email = Column(EmailType, unique=True)
     query_email = Column(EmailType, unique=True)
-    phones = ARRAY(
-        Column(PhoneNumberType(region=REGION, max_length=12), unique=True),
-        dimensions=1)
+    phones = Column(String(length=50), unique=False)
 
     inst_type_uid = Column(UUIDType, ForeignKey('institution_types.uid'))
     inst_type = relationship(InstitutionType, back_populates="institutions")
@@ -99,10 +97,13 @@ class Institution(Base):
         if dummy:
             return inp
 
-        Session = kwargs.get("session_maker", None)
-        if Session is None:
-            raise ValueError('no session_maker parameter supplied')
-        session = Session()
+        # Session = kwargs.get("session_maker", None)
+        # if Session is None:
+        #     raise ValueError('no session_maker parameter supplied')
+        # session = Session()
+
+        type_dict = kwargs.get("inst_types", None)
+
         for row in inp:
             title, short_title, tin, rrc, \
                 account_details, details, head_name = row
@@ -143,6 +144,7 @@ class Institution(Base):
                     ps.append(pn)
 
             phones = ps
+            phones = [p.e164 for p in phones]
 
             det = None
             while True:
@@ -152,6 +154,33 @@ class Institution(Base):
                     break
                 details = det
             print(short_title, details, "\n------------")
-            session.add(
-                Institution(phones=phones)
+
+            short_title = short_title.strip()
+            title = title.strip()
+
+            if short_title.startswith('МБДОУ'):
+                inst_type = type_dict['mdbou']
+            elif short_title.find('СОШ') >= 0:
+                inst_type = type_dict['school']
+            elif short_title.find('ГИМНАЗИЯ'):
+                inst_type = type_dict['gymnasium']
+            elif short_title.find('ЛИЦЕЙ'):
+                inst_type = type_dict['lycei']
+            else:
+                raise ValueError('unknown institution type')
+
+            inst = Institution(
+                title=title,
+                short_title=short_title,
+                tin=tin,
+                rrc=rrc,
+                account_details=account_details,
+                details=details,
+                head_name=head_name,
+                head_email=email,
+                query_email=email,
+                phones=';'.join(phones),
+                inst_type=inst_type
             )
+
+            yield inst

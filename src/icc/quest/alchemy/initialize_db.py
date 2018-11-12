@@ -5,6 +5,8 @@ import transaction
 from sqlalchemy import engine_from_config, create_engine, exc
 from sqlalchemy_utils import database_exists, create_database, drop_database
 from sqlalchemy.orm import sessionmaker
+from pkg_resources import resource_filename
+
 
 from pyramid.paster import (
     get_appsettings,
@@ -55,23 +57,39 @@ SESSION = None
 
 def fill_in_basics():
     sess = SESSION()
+    csv = os.path.abspath(
+        os.path.join(
+            resource_filename(
+                'icc.quest',
+                "../../../"),
+            "input/requisites.csv")
+    )
 
     inst_type = sess.query(InstitutionType).first()
     if inst_type is None:  # Suppose Database is empty
-        sess.add_all([
-            InstitutionType(
-                title="Муниципальное казенное дошкольное образовательное учреждение",
+        type_dict = {
+            'mdbou': InstitutionType(
+                title="Муниципальное дошкольное образовательное учреждение",
                 abbreviation="МБДОУ"),
-            InstitutionType(
-                title="Муниципальное казенное образовательное учреждение (средняя общеобразовательная школа)",
+            'school': InstitutionType(
+                title="Муниципальное образовательное учреждение (средняя общеобразовательная школа)",
                 abbreviation="МБОУ СОШ"),
-            InstitutionType(
-                title="Муниципальное казенное образовательное учреждение (гимназия)",
+            'gymnasium': InstitutionType(
+                title="Муниципальное образовательное учреждение (гимназия)",
                 abbreviation="МБОУ ГИМНАЗИЯ"),
-            InstitutionType(
-                title="Муниципальное казенное образовательное учреждение (лицей)",
+            'lycei': InstitutionType(
+                title="Муниципальное образовательное учреждение (лицей)",
                 abbreviation="МБОУ ЛИЦЕЙ")
-        ])
+        }
+        sess.add_all(list(type_dict.values()))
+        sess.commit()
+        inst = sess.query(Institution).first()
+        if inst is not None:
+            raise RuntimeError(
+                'organizations already exist, but their types aren\'t')
+
+        for inst in Institution.load_from_csv(csv):
+            sess.add(inst)
         sess.commit()
 
 
