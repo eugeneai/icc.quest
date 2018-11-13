@@ -7,11 +7,13 @@
        handler="icc.quest.templates.subscribers.add_base_template"
        for="pyramid.events.BeforeRender"
        />
+
    <route
        name="doc"
        pattern="/doc/*traverse"
        factory=".pyramid.resource_factory"
        />
+
   <!--
    <adapter
       factory="isu.college.pyramid.StudyPlanVew"
@@ -78,6 +80,7 @@
        name="commit"
        request_method="POST"
        />
+   <!-- application routes and views -->
    <route
        name="test"
        pattern="/test/"
@@ -87,6 +90,28 @@
        renderer="icc.quest:templates/test.pt"
        view=".pyramid.TestView"
        attr="test_form"
+       />
+
+   <route
+       name="edit-type"
+       pattern="/institution-type/edit"
+       />
+   <view
+       route_name="edit-type"
+       renderer="icc.quest:templates/edit-form.pt"
+       view=".pyramid.DatabaseView"
+       attr="inst_type_form"
+       />
+
+   <route
+       pattern="api/v1.0/inst_types"
+       name="inst-types"
+       />
+   <view
+       route_name="inst-types"
+       renderer="json"
+       view=".pyramid.DatabaseView"
+       attr="inst_types"
        />
 
 </configure>

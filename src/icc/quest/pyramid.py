@@ -1,3 +1,4 @@
+import logging
 from zope.component import adapter
 from pyramid.httpexceptions import HTTPSeeOther
 from pyramid.response import FileResponse
@@ -10,12 +11,15 @@ import os
 import os.path
 from lxml import etree
 from pkg_resources import resource_filename
+
+from icc.quest import alchemy
+import deform
+
 from zope.i18nmessageid import MessageFactory
-import logging
+_ = MessageFactory("icc.quest")
 
 logger = logging.getLogger("icc.quest")
 
-_ = MessageFactory("icc.quest")
 
 DATADIR = os.path.abspath(
     os.path.join(
@@ -170,6 +174,21 @@ class PageView(View):
         self.storage.save_file(body_file, filename, replace=True)
 
         return self.respjson()
+
+
+class DatabaseView(PageView):
+    title = _('Database Editing')
+
+    @property
+    def inst_types(self):
+        print(self.request.registry.dbsession)
+        return {"a": "b"}
+
+    def inst_type_form(self):
+        schema = alchemy.schema.Institution()
+        form = deform.Form(schema, buttons=(_('Submit'),))
+        self.form = form.render()
+        return self.response(form=self.form)
 
 
 class TestView(PageView):

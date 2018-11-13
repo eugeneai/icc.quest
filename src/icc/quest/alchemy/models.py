@@ -29,6 +29,8 @@ from sqlalchemy_utils import (
     PhoneNumber,
     generic_repr
 )
+import colander
+import deform
 from uuid import uuid1 as _uuid
 
 DBSession = scoped_session(
@@ -50,7 +52,11 @@ REGION = "RU"
 @generic_repr
 class InstitutionType(Base):
     __tablename__ = 'institution_types'
-    uid = Column(UUIDType, primary_key=True, default=_uuid)
+    uid = Column(UUIDType, primary_key=True, default=_uuid,
+                 info={'colanderalchemy': {
+                     'typ': colander.String(),
+                     'widget': deform.widget.HiddenWidget(),
+                 }})
     title = Column(String(length=255), unique=True)
     abbreviation = Column(String(length=50), unique=True)
 
@@ -60,7 +66,11 @@ class InstitutionType(Base):
 @generic_repr
 class Institution(Base):
     __tablename__ = 'institutions'
-    uid = Column(UUIDType, primary_key=True, default=_uuid)
+    uid = Column(UUIDType, primary_key=True, default=_uuid,
+                 info={'colanderalchemy': {
+                     'typ': colander.String(),
+                     'widget': deform.widget.HiddenWidget(),
+                 }})
     title = Column(String(256), unique=True)
     short_title = Column(String(length=256), unique=True)
     tin = Column(BigInteger, unique=True)  # ИНН
@@ -72,7 +82,12 @@ class Institution(Base):
     query_email = Column(EmailType, unique=True)
     phones = Column(String(length=255), unique=False)
 
-    inst_type_uid = Column(UUIDType, ForeignKey('institution_types.uid'))
+    inst_type_uid = Column(UUIDType, ForeignKey('institution_types.uid'),
+                           info={'colanderalchemy': {
+                               'typ': colander.String(),
+                               'widget': deform.widget.AutocompleteInputWidget(
+                                   values='/api/v1.0/inst_types'),
+                           }})
     inst_type = relationship(InstitutionType, back_populates="institutions")
 
     @classmethod

@@ -17,6 +17,8 @@ pyramid_tm
 sqlalchemy
 sqlalchemy-utils
 zope.sqlalchemy
+pyramid_sacrud
+ps_alchemy
 phonenumbers
 # psycopg2-binary
 https://github.com/psycopg/psycopg2/archive/2_7_6.tar.gz
