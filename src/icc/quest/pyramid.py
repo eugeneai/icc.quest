@@ -14,6 +14,9 @@ from pkg_resources import resource_filename
 
 from icc.quest import alchemy
 import deform
+import uuid
+from .alchemy.models import *
+import transaction
 
 from zope.i18nmessageid import MessageFactory
 _ = MessageFactory("icc.quest")
@@ -185,9 +188,44 @@ class DatabaseView(PageView):
         return {"a": "b"}
 
     def inst_type_form(self):
-        schema = alchemy.schema.Institution()
-        form = deform.Form(schema, buttons=(_('Submit'),))
-        self.form = form.render()
+        request = self.request
+        schema = request.registry.schemas["InstitutionType"]
+        form = deform.Form(schema, buttons=(_('submit'), _('delete')))
+
+        get = request.GET
+        uuid_ = get.get("uuid", None)
+
+        appstruct = {'q': 1}
+        if uuid_ != None:
+            uuid_ = uuid.UUID(uuid_)
+            appstruct['uuid'] = uuid_
+
+        if 'submit' in request.POST:
+            controls = request.POST.items()
+            try:
+                appstruct = form.validate(controls)
+            except deform.ValidationFailure as e:
+                self.form = e.render()
+            else:
+                try:
+                    uuid_ = uuid.UUID(appstruct.get('uuid', None))
+                    appstruct['uuid'] = uuid_
+                except (TypeError, ValueError):
+                    if uuid_ is not None:
+                        del appstruct['uuid']
+
+                instType = InstitutionType(**appstruct)
+                session = request.registry.dbsession()
+                session.add(instType)
+                transaction.commit()
+                self.form = str(instType)
+            return self.response(form=self.form)
+        if 'delete' in request.POST:
+            self.message = 'OK, Deleted'
+            self.form = ''
+            return self.response(form=self.form)
+
+        self.form = form.render(appstruct=appstruct)
         return self.response(form=self.form)
 
 

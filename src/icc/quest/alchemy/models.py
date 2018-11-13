@@ -32,6 +32,8 @@ from sqlalchemy_utils import (
 import colander
 import deform
 from uuid import uuid1 as _uuid
+from zope.i18nmessageid import MessageFactory
+_ = MessageFactory("icc.quest")
 
 DBSession = scoped_session(
     sessionmaker(extension=ZopeTransactionExtension()))
@@ -52,25 +54,42 @@ REGION = "RU"
 @generic_repr
 class InstitutionType(Base):
     __tablename__ = 'institution_types'
-    uid = Column(UUIDType, primary_key=True, default=_uuid,
-                 info={'colanderalchemy': {
-                     'typ': colander.String(),
-                     'widget': deform.widget.HiddenWidget(),
-                 }})
-    title = Column(String(length=255), unique=True)
-    abbreviation = Column(String(length=50), unique=True)
 
-    institutions = relationship("Institution", back_populates="inst_type")
+    __colanderalchemy_config__ = {'title': _('Type of organizations')}
+
+    uuid = Column(UUIDType, primary_key=True, default=_uuid,
+                  info={'colanderalchemy': {
+                      'typ': colander.String(),
+                      'widget': deform.widget.HiddenWidget(),
+                      'title': _('UUID'),
+                  }})
+    title = Column(String(length=255), unique=True,
+                   info={'colanderalchemy': {
+                       # 'typ': colander.String(),
+                       # 'widget': deform.widget.HiddenWidget(),
+                       'title': _('Tile (long)'),
+                   }})
+
+    abbreviation = Column(String(length=50), unique=True,
+                          info={'colanderalchemy': {
+                              'title': _('Abbreviation')
+                          }}
+                          )
+
+    institutions = relationship("Institution", back_populates="inst_type",
+                                info={'colanderalchemy': {
+                                    'exclude': True}}
+                                )
 
 
 @generic_repr
 class Institution(Base):
     __tablename__ = 'institutions'
-    uid = Column(UUIDType, primary_key=True, default=_uuid,
-                 info={'colanderalchemy': {
-                     'typ': colander.String(),
-                     'widget': deform.widget.HiddenWidget(),
-                 }})
+    uuid = Column(UUIDType, primary_key=True, default=_uuid,
+                  info={'colanderalchemy': {
+                      'typ': colander.String(),
+                      'widget': deform.widget.HiddenWidget(),
+                  }})
     title = Column(String(256), unique=True)
     short_title = Column(String(length=256), unique=True)
     tin = Column(BigInteger, unique=True)  # ИНН
@@ -82,12 +101,12 @@ class Institution(Base):
     query_email = Column(EmailType, unique=True)
     phones = Column(String(length=255), unique=False)
 
-    inst_type_uid = Column(UUIDType, ForeignKey('institution_types.uid'),
-                           info={'colanderalchemy': {
-                               'typ': colander.String(),
-                               'widget': deform.widget.AutocompleteInputWidget(
-                                   values='/api/v1.0/inst_types'),
-                           }})
+    inst_type_uuid = Column(UUIDType, ForeignKey('institution_types.uuid'),
+                            info={'colanderalchemy': {
+                                'typ': colander.String(),
+                                'widget': deform.widget.AutocompleteInputWidget(
+                                    values='/api/v1.0/inst_types'),
+                            }})
     inst_type = relationship(InstitutionType, back_populates="institutions")
 
     @classmethod

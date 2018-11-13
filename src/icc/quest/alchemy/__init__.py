@@ -17,6 +17,7 @@ def includeme(global_config, **settings):
 
     # add sacrud and project models
     global_config.include('pyramid_sacrud')
+    global_config.add_static_view('deform', 'deform:static')
 
     settings = global_config.registry.settings
     settings['pyramid_sacrud.models'] = (('Institutions',
@@ -27,3 +28,8 @@ def includeme(global_config, **settings):
     base_resource = settings['ps_alchemy.base_resource']
     base_resource.add_to_registry('json_encoder', JSONEncoder)
     base_resource.add_to_registry('json_decoder', JSONDecoder)
+    registry = global_config.registry
+    registry.schemas = {
+        "Institution": schema.Institution,
+        "InstitutionType": schema.InstitutionType,
+    }
