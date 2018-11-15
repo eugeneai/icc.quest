@@ -107,7 +107,9 @@ class Institution(Base):
                                 'widget': deform.widget.AutocompleteInputWidget(
                                     values='/api/v1.0/inst_types'),
                             }})
-    inst_type = relationship(InstitutionType, back_populates="institutions")
+    inst_type = relationship(InstitutionType, back_populates="institutions",
+                             info={'colanderalchemy': {
+                                 'exclude': True}})
 
     @classmethod
     def default_emails(cls, obj):

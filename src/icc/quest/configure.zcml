@@ -93,16 +93,15 @@
        />
 
    <route
-       name="fetch-type"
+       name="inst-type-fetch"
        pattern="/institution-type"
        />
    <view
-       route_name="fetch-type"
+       route_name="inst-type-fetch"
        renderer="icc.quest:templates/fetch.pt"
        view=".pyramid.DatabaseView"
        attr="fetch_institution_types"
        />
-
    <route
        name="edit-type"
        pattern="/institution-type/edit"
@@ -112,6 +111,29 @@
        renderer="icc.quest:templates/edit-form.pt"
        view=".pyramid.DatabaseView"
        attr="inst_type_form"
+       />
+
+
+   <route
+       name="inst-fetch"
+       pattern="/institution"
+       />
+   <view
+       route_name="inst-fetch"
+       renderer="icc.quest:templates/fetch.pt"
+       view=".pyramid.DatabaseView"
+       attr="fetch_institutions"
+       />
+
+   <route
+       name="edit-inst"
+       pattern="/institution/edit"
+       />
+   <view
+       route_name="edit-inst"
+       renderer="icc.quest:templates/edit-form.pt"
+       view=".pyramid.DatabaseView"
+       attr="inst_form"
        />
 
    <route

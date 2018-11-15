@@ -179,6 +179,10 @@ class PageView(View):
         return self.respjson()
 
 
+RETBTN = \
+    """<a href='{}' class='btn btn-success'>Back to table</a>"""
+
+
 class DatabaseView(PageView):
     title = _('Database Editing')
 
@@ -187,9 +191,10 @@ class DatabaseView(PageView):
         print(self.request.registry.dbsession)
         return {"a": "b"}
 
-    def inst_type_form(self):
+    def edit_form(self, schema, query_cb, store_cb):
         request = self.request
-        schema = request.registry.schemas["InstitutionType"]
+        retbtn = RETBTN.format(request.path.replace('/edit', ''))
+        schema = request.registry.schemas[schema]
 
         get = request.GET
         uuid_ = get.get("id", None)
@@ -198,11 +203,13 @@ class DatabaseView(PageView):
             buttons.append(_('delete'))
         form = deform.Form(schema, buttons=buttons)
 
-        appstruct = {'q': 1}
+        appstruct = {}
         if uuid_ != None:
             uuid_ = uuid.UUID(uuid_)
             appstruct['uuid'] = uuid_
 
+        session = request.registry.dbsession()
+        appstruct, obj = query_cb(appstruct, session, schema)
         if 'submit' in request.POST:
             controls = request.POST.items()
             try:
@@ -216,20 +223,59 @@ class DatabaseView(PageView):
                 except (TypeError, ValueError):
                     if uuid_ is not None:
                         del appstruct['uuid']
-
-                instType = InstitutionType(**appstruct)
-                session = request.registry.dbsession()
-                session.add(instType)
+                obj = store_cb(appstruct, obj, schema)
+                session.add(obj)
                 transaction.commit()
-                self.form = str(instType)
+                self.form = "Результат :{}. <br> {}".format(
+                    appstruct, retbtn)
             return self.response(form=self.form)
         if 'delete' in request.POST:
             self.message = 'OK, Deleted'
-            self.form = ''
+            self.form = 'Запись удалена. Удачного вам дня.<br/>'+retbtn
             return self.response(form=self.form)
 
         self.form = form.render(appstruct=appstruct)
         return self.response(form=self.form)
+
+    def inst_type_form(self):
+        inistType = None
+
+        def q(appstruct, session, schema):
+            uuid = appstruct.get('uuid', None)
+            if uuid is not None:
+                o = instType = session.query(InstitutionType).get(uuid)
+            else:
+                o = None
+            if o is not None:
+                appstruct = {'uuid': o.uuid}
+                appstruct['title'] = o.title
+                appstruct['abbreviation'] = o.abbreviation
+            return appstruct, o
+
+        def s(appstruct, o, schema):
+            if o is None:
+                return InstitutionType(**appstruct)
+            o.title = appstruct['title']
+            o.abbreviation = appstruct['abbreviation']
+            return o
+        return self.edit_form('InstitutionType', q, s)
+
+    def inst_form(self):
+        int = None
+
+        def q(appstruct, session, schema):
+            uuid = appstruct.get('uuid', None)
+            if uuid is not None:
+                o = instType = session.query(Institution).get(uuid)
+            else:
+                o = None
+            return schema.dictify(o), o
+
+        def s(appstruct, o, schema):
+            o = schema.objectify(appstruct, context=o)
+            print("Obj:", o)
+            return o
+        return self.edit_form('Institution', q, s)
 
     def fetch(self, relation, **kwargs):
         request = self.request
