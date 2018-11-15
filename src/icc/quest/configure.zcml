@@ -93,6 +93,17 @@
        />
 
    <route
+       name="fetch-type"
+       pattern="/institution-type"
+       />
+   <view
+       route_name="fetch-type"
+       renderer="icc.quest:templates/fetch.pt"
+       view=".pyramid.DatabaseView"
+       attr="fetch_institution_types"
+       />
+
+   <route
        name="edit-type"
        pattern="/institution-type/edit"
        />

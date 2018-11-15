@@ -190,10 +190,13 @@ class DatabaseView(PageView):
     def inst_type_form(self):
         request = self.request
         schema = request.registry.schemas["InstitutionType"]
-        form = deform.Form(schema, buttons=(_('submit'), _('delete')))
 
         get = request.GET
-        uuid_ = get.get("uuid", None)
+        uuid_ = get.get("id", None)
+        buttons = [_('submit')]
+        if uuid_ is not None:
+            buttons.append(_('delete'))
+        form = deform.Form(schema, buttons=buttons)
 
         appstruct = {'q': 1}
         if uuid_ != None:
@@ -227,6 +230,33 @@ class DatabaseView(PageView):
 
         self.form = form.render(appstruct=appstruct)
         return self.response(form=self.form)
+
+    def fetch(self, relation, **kwargs):
+        request = self.request
+        start = request.GET.get('start', 0)
+        length = request.GET.get('length', 200)
+        session = request.registry.dbsession()
+        result = session.query(relation).offset(start).limit(length).all()
+        std = self.response(context=result)
+        std.update(kwargs)
+        return std
+
+    def fetch_institution_types(self):
+        return self.fetch(InstitutionType,
+                          id='uuid',
+                          title=_("Institution types"),
+                          headings=[_('Abbreviation'), _('Title')],
+                          fields=['abbreviation', 'title'])
+
+    def fetch_institutions(self):
+        return self.fetch(Institution,
+                          id='uuid',
+                          title=_("Institutions"),
+                          headings=[_('Short Title'), _('Head Name'),
+                                    _('query_email'), _('phones')],
+                          fields=["short_title", "head_name",
+                                  "query_email", "phones"]
+                          )
 
 
 class TestView(PageView):
