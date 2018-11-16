@@ -82,6 +82,9 @@ class InstitutionType(Base):
                                 )
 
 
+WIDGET_inst_type_uuid = deform.widget.Select2Widget()
+
+
 @generic_repr
 class Institution(Base):
     __tablename__ = 'institutions'
@@ -104,8 +107,7 @@ class Institution(Base):
     inst_type_uuid = Column(UUIDType, ForeignKey('institution_types.uuid'),
                             info={'colanderalchemy': {
                                 'typ': colander.String(),
-                                'widget': deform.widget.AutocompleteInputWidget(
-                                    values='/api/v1.0/inst_types'),
+                                'widget': WIDGET_inst_type_uuid
                             }})
     inst_type = relationship(InstitutionType, back_populates="institutions",
                              info={'colanderalchemy': {

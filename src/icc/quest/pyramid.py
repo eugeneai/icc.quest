@@ -188,8 +188,9 @@ class DatabaseView(PageView):
 
     @property
     def inst_types(self):
-        print(self.request.registry.dbsession)
-        return {"a": "b"}
+        session = self.request.registry.dbsession()
+        types = session.query(InstitutionType).limit(20).all()
+        return [(o.uuid, o.abbreviation) for o in types]
 
     def edit_form(self, schema, query_cb, store_cb):
         request = self.request
@@ -242,39 +243,31 @@ class DatabaseView(PageView):
 
         def q(appstruct, session, schema):
             uuid = appstruct.get('uuid', None)
-            if uuid is not None:
-                o = instType = session.query(InstitutionType).get(uuid)
-            else:
-                o = None
-            if o is not None:
-                appstruct = {'uuid': o.uuid}
-                appstruct['title'] = o.title
-                appstruct['abbreviation'] = o.abbreviation
-            return appstruct, o
+            o = session.query(InstitutionType).get(
+                uuid) if uuid is not None else None
+            return schema.dictify(o), o
 
         def s(appstruct, o, schema):
-            if o is None:
-                return InstitutionType(**appstruct)
-            o.title = appstruct['title']
-            o.abbreviation = appstruct['abbreviation']
+            o = schema.objectify(appstruct, context=o)
             return o
+
         return self.edit_form('InstitutionType', q, s)
 
     def inst_form(self):
         int = None
 
+        WIDGET_inst_type_uuid.values = self.inst_types
+
         def q(appstruct, session, schema):
             uuid = appstruct.get('uuid', None)
-            if uuid is not None:
-                o = instType = session.query(Institution).get(uuid)
-            else:
-                o = None
+            o = session.query(Institution).get(
+                uuid) if uuid is not None else None
             return schema.dictify(o), o
 
         def s(appstruct, o, schema):
             o = schema.objectify(appstruct, context=o)
-            print("Obj:", o)
             return o
+
         return self.edit_form('Institution', q, s)
 
     def fetch(self, relation, **kwargs):
