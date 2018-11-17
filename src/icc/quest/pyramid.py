@@ -1,9 +1,10 @@
+from sqlalchemy_utils.types.phone_number import PhoneNumberParseException
 import logging
 from zope.component import adapter
 from pyramid.httpexceptions import HTTPSeeOther
 from pyramid.response import FileResponse
 
-from isu.webapp.views import View
+from isu.webapp.views import View, PanelItem
 from glob import glob
 from pkg_resources import resource_filename
 from icc.mvw.interfaces import IView
@@ -19,7 +20,6 @@ from .alchemy.models import *
 import transaction
 
 from zope.i18nmessageid import MessageFactory
-_ = MessageFactory("icc.quest")
 
 from sqlalchemy_utils import (
     EmailType, UUIDType,
@@ -27,6 +27,7 @@ from sqlalchemy_utils import (
     PhoneNumber,
 )
 
+_ = MessageFactory("icc.quest")
 
 logger = logging.getLogger("icc.quest")
 
@@ -81,7 +82,30 @@ class DummyStorage:
         return os.path.join(self.root, filename)
 
 
-class PageView(View):
+class ViewBase(View):
+    title = _("Statistic acquisition platform")
+
+    def response(self, **kwargs):
+        resp = {
+            'view': self,
+            'context': self.context
+        }
+        resp.update(kwargs)
+        return resp
+
+    @property
+    def panel_items(self):
+        P = PanelItem
+        return [
+            P(_('Dashboard'), route='home', icon='glyphicon glyphicon-dashboard'),
+            P(_('Institutions'), route='inst-fetch',
+              icon='glyphicon glyphicon-briefcase'),
+            P(_('Institution Types'), route='inst-type-fetch',
+              icon='glyphicon glyphicon-pencil')
+        ]
+
+
+class PageView(ViewBase):
 
     def __init__(self, context, request):
         super(PageView, self).__init__(context=context,
@@ -199,7 +223,10 @@ class DatabaseView(PageView):
         types = session.query(InstitutionType).limit(20).all()
         return [(o.uuid, o.abbreviation) for o in types]
 
-    def edit_form(self, model_class, query_cb=None, store_cb=None):
+    def edit_form(self, model_class,
+                  query_cb=None, store_cb=None,
+                  struct_cb=None
+                  ):
         request = self.request
         retbtn = RETBTN.format(request.path.replace('/edit', ''))
         schema = model_class.__colanderalchemy__
@@ -227,6 +254,8 @@ class DatabaseView(PageView):
             else:
                 obj = session.query(model_class).get(uuid_)
             appstruct = schema.dictify(obj)
+            if struct_cb is not None:
+                appstruct = struct_cb(appstruct, to_form=True)
 
         if 'submit' in request.POST:
             controls = request.POST.items()
@@ -245,6 +274,8 @@ class DatabaseView(PageView):
                 if store_cb is not None:
                     obj = store_cb(appstruct, obj, schema)
                 else:
+                    if struct_cb is not None:
+                        appstruct = struct_cb(appstruct, to_form=False)
                     obj = schema.objectify(appstruct, context=obj)
 
                 session.add(obj)
@@ -263,16 +294,6 @@ class DatabaseView(PageView):
     def inst_type_form(self):
         inistType = None
 
-        def q(appstruct, session, schema):
-            uuid = appstruct.get('uuid', None)
-            o = session.query(InstitutionType).get(
-                uuid) if uuid is not None else None
-            return schema.dictify(o), o
-
-        def s(appstruct, o, schema):
-            o = schema.objectify(appstruct, context=o)
-            return o
-
         return self.edit_form(InstitutionType)
 
     def inst_form(self):
@@ -280,41 +301,43 @@ class DatabaseView(PageView):
 
         WIDGET_inst_type_uuid.values = self.inst_types
 
-        def q(appstruct, session, schema):
-            uuid = appstruct.get('uuid', None)
-            o = session.query(Institution).get(
-                uuid) if uuid is not None else None
-            appstruct = schema.dictify(o)
-            print(appstruct)
-            phones = appstruct['phones'].split(';')
-            n = []
-            for phone in phones:
-                pn = PhoneNumber(phone, region=REGION)
-                if pn.is_valid_number():
-                    phone = pn.national
-                    if phone.startswith('8'):
-                        phone = '+7'+phone[1:]
-                    n.append(phone)
-            phones = n
-            if not phones:
-                phones=['']
-            print(phones)
-            appstruct['phones']=phones
-            return appstruct, o
+        def struct_cb(appstruct, to_form=None):
+            if to_form is None:
+                raise ValueError("to_form parameter must be "
+                                 "explicitly set either True or False")
 
-        def s(appstruct, o, schema):
-            n = []
-            for phone in appstruct['phones']:
-                pn = PhoneNumber(phone, region=REGION)
-                if pn.is_valid_number():
-                    n.append(pn.e164)
-                else:
-                    print("Not valid:", pn)
-            appstruct['phones']=';'.join(n)
-            o = schema.objectify(appstruct, context=o)
-            return o
+            if to_form:  # From object to Form direction
+                phones = appstruct['phones'].split(';')
+                n = []
+                for phone in phones:
+                    try:
+                        pn = PhoneNumber(phone, region=REGION)
+                    except PhoneNumberParseException:
+                        continue
+                    if pn.is_valid_number():
+                        phone = pn.national
+                        if phone.startswith('8'):
+                            phone = '+7'+phone[1:]
+                        n.append(phone)
+                phones = n
+                if not phones:
+                    phones = ['']
+                appstruct['phones'] = phones
+            else:  # From Form to object direction
+                n = []
+                for phone in appstruct['phones']:
+                    try:
+                        pn = PhoneNumber(phone, region=REGION)
+                    except PhoneNumberParseException:
+                        continue
+                    if pn.is_valid_number():
+                        n.append(pn.e164)
+                    else:
+                        print("Not valid:", pn)
+                appstruct['phones'] = ';'.join(n)
+            return appstruct
 
-        return self.edit_form(Institution, q, s)
+        return self.edit_form(Institution, struct_cb=struct_cb)
 
     def fetch(self, relation, **kwargs):
         request = self.request
@@ -342,6 +365,17 @@ class DatabaseView(PageView):
                           fields=["short_title", "head_name",
                                   "query_email", "phones"]
                           )
+
+
+class ApplicationView(View):
+    title = _("Statistic acquisition platform DASHBOARD")
+
+    def home(self):
+        return self.response()
+
+    @property
+    def body(self):
+        return "<h1>Hello!</h1>"
 
 
 class TestView(PageView):
