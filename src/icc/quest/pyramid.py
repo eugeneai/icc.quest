@@ -21,6 +21,13 @@ import transaction
 from zope.i18nmessageid import MessageFactory
 _ = MessageFactory("icc.quest")
 
+from sqlalchemy_utils import (
+    EmailType, UUIDType,
+    PhoneNumberType,
+    PhoneNumber,
+)
+
+
 logger = logging.getLogger("icc.quest")
 
 
@@ -192,10 +199,11 @@ class DatabaseView(PageView):
         types = session.query(InstitutionType).limit(20).all()
         return [(o.uuid, o.abbreviation) for o in types]
 
-    def edit_form(self, schema, query_cb, store_cb):
+    def edit_form(self, model_class, query_cb=None, store_cb=None):
         request = self.request
         retbtn = RETBTN.format(request.path.replace('/edit', ''))
-        schema = request.registry.schemas[schema]
+        schema = model_class.__colanderalchemy__
+        print(schema.includes)
 
         get = request.GET
         uuid_ = get.get("id", None)
@@ -210,7 +218,16 @@ class DatabaseView(PageView):
             appstruct['uuid'] = uuid_
 
         session = request.registry.dbsession()
-        appstruct, obj = query_cb(appstruct, session, schema)
+
+        if query_cb is not None:
+            appstruct, obj = query_cb(appstruct, session, schema)
+        else:
+            if uuid_ is None:
+                obj = model_class()
+            else:
+                obj = session.query(model_class).get(uuid_)
+            appstruct = schema.dictify(obj)
+
         if 'submit' in request.POST:
             controls = request.POST.items()
             try:
@@ -224,7 +241,12 @@ class DatabaseView(PageView):
                 except (TypeError, ValueError):
                     if uuid_ is not None:
                         del appstruct['uuid']
-                obj = store_cb(appstruct, obj, schema)
+
+                if store_cb is not None:
+                    obj = store_cb(appstruct, obj, schema)
+                else:
+                    obj = schema.objectify(appstruct, context=obj)
+
                 session.add(obj)
                 transaction.commit()
                 self.form = "Результат :{}. <br> {}".format(
@@ -251,7 +273,7 @@ class DatabaseView(PageView):
             o = schema.objectify(appstruct, context=o)
             return o
 
-        return self.edit_form('InstitutionType', q, s)
+        return self.edit_form(InstitutionType)
 
     def inst_form(self):
         int = None
@@ -262,13 +284,37 @@ class DatabaseView(PageView):
             uuid = appstruct.get('uuid', None)
             o = session.query(Institution).get(
                 uuid) if uuid is not None else None
-            return schema.dictify(o), o
+            appstruct = schema.dictify(o)
+            print(appstruct)
+            phones = appstruct['phones'].split(';')
+            n = []
+            for phone in phones:
+                pn = PhoneNumber(phone, region=REGION)
+                if pn.is_valid_number():
+                    phone = pn.national
+                    if phone.startswith('8'):
+                        phone = '+7'+phone[1:]
+                    n.append(phone)
+            phones = n
+            if not phones:
+                phones=['']
+            print(phones)
+            appstruct['phones']=phones
+            return appstruct, o
 
         def s(appstruct, o, schema):
+            n = []
+            for phone in appstruct['phones']:
+                pn = PhoneNumber(phone, region=REGION)
+                if pn.is_valid_number():
+                    n.append(pn.e164)
+                else:
+                    print("Not valid:", pn)
+            appstruct['phones']=';'.join(n)
             o = schema.objectify(appstruct, context=o)
             return o
 
-        return self.edit_form('Institution', q, s)
+        return self.edit_form(Institution, q, s)
 
     def fetch(self, relation, **kwargs):
         request = self.request

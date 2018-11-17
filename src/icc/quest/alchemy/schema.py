@@ -10,9 +10,6 @@ _ = MessageFactory("icc.quest")
 #     number2 = colander.SchemaNode(colander.String(), title=_('Phone2'))
 #     number3 = colander.SchemaNode(colander.String(), title=_('Phone3'))
 
-class Phones(colander.SequenceSchema):
-    number = colander.SchemaNode(colander.String(), title=_('Phone'))
-
 
 # class Institution(colander.MappingSchema):
 #     uuid = colander.SchemaNode(colander.String(), title=_('UUID'))
@@ -33,7 +30,7 @@ class Phones(colander.SequenceSchema):
 #         colander.String(), title=_('Query email'))
 #     phones = Phones()
 #     inst_type_uuid = colander.SchemaNode(colander.String(), title=_('UUID'))
-InstitutionType = colanderalchemy.SQLAlchemySchemaNode(
-    InstitutionType)
+# InstitutionType = colanderalchemy.SQLAlchemySchemaNode(
+#     InstitutionType)
 
-Institution = colanderalchemy.SQLAlchemySchemaNode(Institution)
+# Institution = colanderalchemy.SQLAlchemySchemaNode(Institution)

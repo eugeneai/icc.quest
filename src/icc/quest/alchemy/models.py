@@ -1,4 +1,7 @@
 # SQL Alchemy subsystem
+from colanderalchemy import setup_schema
+from sqlalchemy.orm import mapper
+from sqlalchemy import event
 from pyramid.security import Allow, Everyone
 import csv
 import re
@@ -35,6 +38,8 @@ from uuid import uuid1 as _uuid
 from zope.i18nmessageid import MessageFactory
 _ = MessageFactory("icc.quest")
 
+event.listen(mapper, 'mapper_configured', setup_schema)
+
 DBSession = scoped_session(
     sessionmaker(extension=ZopeTransactionExtension()))
 Base = declarative_base()
@@ -63,12 +68,6 @@ class InstitutionType(Base):
                       'widget': deform.widget.HiddenWidget(),
                       'title': _('UUID'),
                   }})
-    title = Column(String(length=255), unique=True,
-                   info={'colanderalchemy': {
-                       # 'typ': colander.String(),
-                       # 'widget': deform.widget.HiddenWidget(),
-                       'title': _('Tile (long)'),
-                   }})
 
     abbreviation = Column(String(length=50), unique=True,
                           info={'colanderalchemy': {
@@ -76,11 +75,27 @@ class InstitutionType(Base):
                           }}
                           )
 
+    title = Column(String(length=255), unique=True,
+                   info={'colanderalchemy': {
+                       # 'typ': colander.String(),
+                       # 'widget': deform.widget.HiddenWidget(),
+                       'title': _('Tile (long)'),
+                   }})
+
     institutions = relationship("Institution", back_populates="inst_type",
                                 info={'colanderalchemy': {
                                     'exclude': True}}
                                 )
 
+
+WIDGET_phone = deform.widget.TextInputWidget(
+    mask='+7 (999) 999-99-99'
+)
+    
+phone = colander.SchemaNode(colander.String(),
+                            name='phone',
+                            title=_('Phone'),
+                            widget=WIDGET_phone)
 
 WIDGET_inst_type_uuid = deform.widget.Select2Widget()
 
@@ -88,6 +103,17 @@ WIDGET_inst_type_uuid = deform.widget.Select2Widget()
 @generic_repr
 class Institution(Base):
     __tablename__ = 'institutions'
+    
+    __colanderalchemy_config__ = {'title': _('Organizations'),
+                                  'overrides':{'phones':{
+                                      'typ':colander.Sequence(),
+                                      'children':[
+                                          phone
+                                      ]
+                                  }}
+                                  #'includes':[column]
+    }
+    
     uuid = Column(UUIDType, primary_key=True, default=_uuid,
                   info={'colanderalchemy': {
                       'typ': colander.String(),
