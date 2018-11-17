@@ -367,7 +367,7 @@ class DatabaseView(PageView):
                           )
 
 
-class ApplicationView(View):
+class ApplicationView(ViewBase):
     title = _("Statistic acquisition platform DASHBOARD")
 
     def home(self):
