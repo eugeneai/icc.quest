@@ -26,8 +26,12 @@ RUN set -e;\
     pyenv shell icc.quest; \
     pip install -U pip setuptools
 
+
+# To install Postresql libs for Python we need the following package.
 RUN set -e;\
-    echo ;\
+    yay -Sy postgresql-libs --noconfirm ; yes | yay -Scc
+
+RUN set -e;\
     git clone --recursive https://github.com/eugeneai/icc.quest;\
     cd ~/icc.quest/; \
     eval "$(pyenv init -)"; \
