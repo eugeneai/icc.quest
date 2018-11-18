@@ -307,7 +307,11 @@ class DatabaseView(PageView):
                                  "explicitly set either True or False")
 
             if to_form:  # From object to Form direction
-                phones = appstruct['phones'].split(';')
+                phone_str = appstruct['phones']
+                try:
+                    phones = phone_str.split(';')
+                except AttributeError:
+                    phones=[]
                 n = []
                 for phone in phones:
                     try:

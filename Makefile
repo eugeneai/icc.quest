@@ -4,6 +4,7 @@
 	run-tests gdb-test clean serve server \
     req req-dev elpy
 
+LCAT=src/icc/quest/locales
 
 req: requirements.txt
 	pip install -r $<
@@ -35,22 +36,24 @@ gdb-test: setup
 
 py:
 	$(PYTHON)
+
 pot:
 	mkdir -p $(LCAT)
-	$(VB)/pot-create src -o $(LCAT)/messages.pot || echo "Someting unusual with pot."
+	# rm $(LCAT)/messages.pot
+	pot-create src -o $(LCAT)/messages.pot || echo "Someting unusual with pot."
+	sed -i 's/\"Language: \\n/"Language: en_US\\n/g' $(LCAT)/messages.pot
 
 init-ru:
-	$(PYTHON) setup.py init_catalog -l ru -i $(LCAT)/messages.pot \
-                         -d $(LCAT)
+	python setup.py init_catalog -l ru -i $(LCAT)/messages.pot -d $(LCAT)
 
 update-ru:
-	$(PYTHON) setup.py update_catalog -l ru -i $(LCAT)/messages.pot \
-                            -d $(LCAT)
+	python setup.py update_catalog -l ru -i $(LCAT)/messages.pot -d $(LCAT)
 
 comp-cat:
-	$(PYTHON) setup.py compile_catalog -d $(LCAT)
+	python setup.py compile_catalog -d $(LCAT)
 
 upd-cat: pot update-ru comp-cat
+
 
 clean:
 	$(PYTHON) setup.py clean

@@ -3,6 +3,13 @@
 
   <include package="isu.webapp" file="static-assets.zcml"/>
   <include package="icc.quest" file="static-assets.zcml"/>
+  <translationdir dir="icc.quest:locales/"/>
+
+  <subscriber
+      for="pyramid.events.NewRequest"
+      handler=".i18n.add_localizer"
+      />
+
 
   <subscriber
       for="pyramid.events.BeforeRender"
