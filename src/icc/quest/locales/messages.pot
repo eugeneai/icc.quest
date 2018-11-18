@@ -1,0 +1,153 @@
+#
+# SOME DESCRIPTIVE TITLE
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2018.
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE 1.0\n"
+"POT-Creation-Date: 2018-11-18 15:24+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Lingua 4.13\n"
+
+#: ./src/icc/quest/pyramid.py:86
+msgid "Statistic acquisition platform"
+msgstr ""
+
+#: ./src/icc/quest/pyramid.py:100
+msgid "Dashboard"
+msgstr ""
+
+#: ./src/icc/quest/pyramid.py:101 ./src/icc/quest/pyramid.py:366
+msgid "Institutions"
+msgstr ""
+
+#: ./src/icc/quest/pyramid.py:103
+msgid "Institution Types"
+msgstr ""
+
+#: ./src/icc/quest/pyramid.py:189 ./src/icc/quest/pyramid.py:395
+msgid "Successfully loaded"
+msgstr ""
+
+#: ./src/icc/quest/pyramid.py:193
+msgid "Cannot load page. It seems it does not exist."
+msgstr ""
+
+#: ./src/icc/quest/pyramid.py:218
+msgid "Database Editing"
+msgstr ""
+
+#: ./src/icc/quest/pyramid.py:237
+msgid "submit"
+msgstr ""
+
+#: ./src/icc/quest/pyramid.py:239
+msgid "delete"
+msgstr ""
+
+#: ./src/icc/quest/pyramid.py:359
+msgid "Institution types"
+msgstr ""
+
+#: ./src/icc/quest/pyramid.py:360 ./src/icc/quest/alchemy/models.py:75
+msgid "Abbreviation"
+msgstr ""
+
+#: ./src/icc/quest/pyramid.py:360
+msgid "Title"
+msgstr ""
+
+#: ./src/icc/quest/pyramid.py:367
+msgid "Short Title"
+msgstr ""
+
+#: ./src/icc/quest/pyramid.py:367
+msgid "Head Name"
+msgstr ""
+
+#: ./src/icc/quest/pyramid.py:368
+msgid "query_email"
+msgstr ""
+
+#: ./src/icc/quest/pyramid.py:368
+msgid "phones"
+msgstr ""
+
+#: ./src/icc/quest/pyramid.py:375
+msgid "Statistic acquisition platform DASHBOARD"
+msgstr ""
+
+#: ./src/icc/quest/alchemy/models.py:64
+msgid "Type of organizations"
+msgstr ""
+
+#: ./src/icc/quest/alchemy/models.py:70
+msgid "UUID"
+msgstr ""
+
+#: ./src/icc/quest/alchemy/models.py:83
+msgid "Tile (long)"
+msgstr ""
+
+#: ./src/icc/quest/alchemy/models.py:98
+msgid "Phone"
+msgstr ""
+
+#: ./src/icc/quest/alchemy/models.py:108
+msgid "Organizations"
+msgstr ""
+
+#: ./src/icc/quest/alchemy/models.py:111 ./src/icc/quest/alchemy/models.py:182
+msgid "Phones"
+msgstr ""
+
+#: ./src/icc/quest/alchemy/models.py:128
+msgid "Title (long)"
+msgstr ""
+
+#: ./src/icc/quest/alchemy/models.py:134
+msgid "Short title"
+msgstr ""
+
+#: ./src/icc/quest/alchemy/models.py:140
+msgid "TIN"
+msgstr ""
+
+#: ./src/icc/quest/alchemy/models.py:146
+msgid "RRC"
+msgstr ""
+
+#: ./src/icc/quest/alchemy/models.py:152
+msgid "Account details"
+msgstr ""
+
+#: ./src/icc/quest/alchemy/models.py:158
+msgid "Details"
+msgstr ""
+
+#: ./src/icc/quest/alchemy/models.py:164
+msgid "Head name"
+msgstr ""
+
+#: ./src/icc/quest/alchemy/models.py:170
+msgid "Head email"
+msgstr ""
+
+#: ./src/icc/quest/alchemy/models.py:176
+msgid "Query email"
+msgstr ""
+
+#: ./src/icc/quest/alchemy/models.py:189
+msgid "Institution type"
+msgstr ""
+
+#: ./src/icc/quest/templates/fetch.pt:18 ./src/icc/quest/templates/fetch.pt:47
+msgid "Add new"
+msgstr ""
