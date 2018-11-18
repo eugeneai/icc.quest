@@ -94,6 +94,28 @@
       />
 
   <route
+      name="edit-query"
+      pattern="/query/edit"
+      />
+  <view
+      route_name="edit-query"
+      renderer="icc.quest:templates/edit-form.pt"
+      view=".pyramid.DatabaseView"
+      attr="query_form"
+      />
+
+  <route
+      name="edit-mailing"
+      pattern="/mailing/edit"
+      />
+  <view
+      route_name="edit-mailing"
+      renderer="icc.quest:templates/edit-form.pt"
+      view=".pyramid.DatabaseView"
+      attr="mailing_form"
+      />
+
+  <route
       pattern="api/v1.0/inst_types"
       name="inst-types"
       />

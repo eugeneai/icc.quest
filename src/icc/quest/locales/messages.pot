@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2018-11-18 15:24+0800\n"
+"POT-Creation-Date: 2018-11-19 02:18+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,136 +16,196 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Lingua 4.13\n"
 
-#: ./src/icc/quest/pyramid.py:86
+#: ./src/icc/quest/pyramid.py:87
 msgid "Statistic acquisition platform"
 msgstr ""
 
-#: ./src/icc/quest/pyramid.py:100
+#: ./src/icc/quest/pyramid.py:101
 msgid "Dashboard"
 msgstr ""
 
-#: ./src/icc/quest/pyramid.py:101 ./src/icc/quest/pyramid.py:366
+#: ./src/icc/quest/pyramid.py:102 ./src/icc/quest/pyramid.py:374
 msgid "Institutions"
 msgstr ""
 
-#: ./src/icc/quest/pyramid.py:103
+#: ./src/icc/quest/pyramid.py:104
 msgid "Institution Types"
 msgstr ""
 
-#: ./src/icc/quest/pyramid.py:189 ./src/icc/quest/pyramid.py:395
+#: ./src/icc/quest/pyramid.py:107
+msgid "SACRUD"
+msgstr ""
+
+#: ./src/icc/quest/pyramid.py:193 ./src/icc/quest/pyramid.py:403
 msgid "Successfully loaded"
 msgstr ""
 
-#: ./src/icc/quest/pyramid.py:193
+#: ./src/icc/quest/pyramid.py:197
 msgid "Cannot load page. It seems it does not exist."
 msgstr ""
 
-#: ./src/icc/quest/pyramid.py:218
+#: ./src/icc/quest/pyramid.py:222
 msgid "Database Editing"
 msgstr ""
 
-#: ./src/icc/quest/pyramid.py:237
+#: ./src/icc/quest/pyramid.py:241
 msgid "submit"
 msgstr ""
 
-#: ./src/icc/quest/pyramid.py:239
+#: ./src/icc/quest/pyramid.py:243
 msgid "delete"
 msgstr ""
 
-#: ./src/icc/quest/pyramid.py:359
+#: ./src/icc/quest/pyramid.py:367
 msgid "Institution types"
 msgstr ""
 
-#: ./src/icc/quest/pyramid.py:360 ./src/icc/quest/alchemy/models.py:75
+#: ./src/icc/quest/pyramid.py:368 ./src/icc/quest/alchemy/models.py:78
 msgid "Abbreviation"
 msgstr ""
 
-#: ./src/icc/quest/pyramid.py:360
+#: ./src/icc/quest/pyramid.py:368
 msgid "Title"
 msgstr ""
 
-#: ./src/icc/quest/pyramid.py:367
+#: ./src/icc/quest/pyramid.py:375
 msgid "Short Title"
 msgstr ""
 
-#: ./src/icc/quest/pyramid.py:367
+#: ./src/icc/quest/pyramid.py:375
 msgid "Head Name"
 msgstr ""
 
-#: ./src/icc/quest/pyramid.py:368
+#: ./src/icc/quest/pyramid.py:376
 msgid "query_email"
 msgstr ""
 
-#: ./src/icc/quest/pyramid.py:368
+#: ./src/icc/quest/pyramid.py:376
 msgid "phones"
 msgstr ""
 
-#: ./src/icc/quest/pyramid.py:375
+#: ./src/icc/quest/pyramid.py:383
 msgid "Statistic acquisition platform DASHBOARD"
 msgstr ""
 
-#: ./src/icc/quest/alchemy/models.py:64
+#: ./src/icc/quest/alchemy/models.py:67
 msgid "Type of organizations"
 msgstr ""
 
-#: ./src/icc/quest/alchemy/models.py:70
+#: ./src/icc/quest/alchemy/models.py:73
 msgid "UUID"
 msgstr ""
 
-#: ./src/icc/quest/alchemy/models.py:83
+#: ./src/icc/quest/alchemy/models.py:86
 msgid "Tile (long)"
 msgstr ""
 
-#: ./src/icc/quest/alchemy/models.py:98
+#: ./src/icc/quest/alchemy/models.py:101
 msgid "Phone"
 msgstr ""
 
-#: ./src/icc/quest/alchemy/models.py:108
+#: ./src/icc/quest/alchemy/models.py:111
 msgid "Organizations"
 msgstr ""
 
-#: ./src/icc/quest/alchemy/models.py:111 ./src/icc/quest/alchemy/models.py:182
+#: ./src/icc/quest/alchemy/models.py:114 ./src/icc/quest/alchemy/models.py:185
 msgid "Phones"
 msgstr ""
 
-#: ./src/icc/quest/alchemy/models.py:128
+#: ./src/icc/quest/alchemy/models.py:131
 msgid "Title (long)"
 msgstr ""
 
-#: ./src/icc/quest/alchemy/models.py:134
+#: ./src/icc/quest/alchemy/models.py:137
 msgid "Short title"
 msgstr ""
 
-#: ./src/icc/quest/alchemy/models.py:140
+#: ./src/icc/quest/alchemy/models.py:143
 msgid "TIN"
 msgstr ""
 
-#: ./src/icc/quest/alchemy/models.py:146
+#: ./src/icc/quest/alchemy/models.py:149
 msgid "RRC"
 msgstr ""
 
-#: ./src/icc/quest/alchemy/models.py:152
+#: ./src/icc/quest/alchemy/models.py:155
 msgid "Account details"
 msgstr ""
 
-#: ./src/icc/quest/alchemy/models.py:158
+#: ./src/icc/quest/alchemy/models.py:161
 msgid "Details"
 msgstr ""
 
-#: ./src/icc/quest/alchemy/models.py:164
+#: ./src/icc/quest/alchemy/models.py:167
 msgid "Head name"
 msgstr ""
 
-#: ./src/icc/quest/alchemy/models.py:170
+#: ./src/icc/quest/alchemy/models.py:173
 msgid "Head email"
 msgstr ""
 
-#: ./src/icc/quest/alchemy/models.py:176
+#: ./src/icc/quest/alchemy/models.py:179
 msgid "Query email"
 msgstr ""
 
-#: ./src/icc/quest/alchemy/models.py:189
+#: ./src/icc/quest/alchemy/models.py:192
 msgid "Institution type"
+msgstr ""
+
+#: ./src/icc/quest/alchemy/models.py:315
+msgid "Query"
+msgstr ""
+
+#: ./src/icc/quest/alchemy/models.py:335
+msgid "Aim"
+msgstr ""
+
+#: ./src/icc/quest/alchemy/models.py:342
+msgid "Description"
+msgstr ""
+
+#: ./src/icc/quest/alchemy/models.py:349 ./src/icc/quest/alchemy/models.py:454
+msgid "Comment"
+msgstr ""
+
+#: ./src/icc/quest/alchemy/models.py:356
+msgid "File of request form"
+msgstr ""
+
+#: ./src/icc/quest/alchemy/models.py:364
+msgid "Form file source"
+msgstr ""
+
+#: ./src/icc/quest/alchemy/models.py:370
+msgid "Mime type"
+msgstr ""
+
+#: ./src/icc/quest/alchemy/models.py:375
+msgid "File name"
+msgstr ""
+
+#: ./src/icc/quest/alchemy/models.py:381
+msgid "Table name"
+msgstr ""
+
+#: ./src/icc/quest/alchemy/models.py:388
+msgid "Starting time"
+msgstr ""
+
+#: ./src/icc/quest/alchemy/models.py:395
+msgid "Ending time"
+msgstr ""
+
+#: ./src/icc/quest/alchemy/models.py:402
+msgid "Mailing"
+msgstr ""
+
+#: ./src/icc/quest/alchemy/models.py:441
+msgid "Sign time"
+msgstr ""
+
+#: ./src/icc/quest/alchemy/models.py:448
+msgid "Update time"
 msgstr ""
 
 #: ./src/icc/quest/templates/fetch.pt:18 ./src/icc/quest/templates/fetch.pt:47

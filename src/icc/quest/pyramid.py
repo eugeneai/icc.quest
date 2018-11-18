@@ -17,6 +17,7 @@ from icc.quest import alchemy
 import deform
 import uuid
 from .alchemy.models import *
+from pyramid_sacrud import PYRAMID_SACRUD_HOME
 import transaction
 
 from zope.i18nmessageid import MessageFactory
@@ -101,7 +102,10 @@ class ViewBase(View):
             P(_('Institutions'), route='inst-fetch',
               icon='glyphicon glyphicon-briefcase'),
             P(_('Institution Types'), route='inst-type-fetch',
-              icon='glyphicon glyphicon-pencil')
+              icon='glyphicon glyphicon-pencil'),
+
+            P(_('SACRUD'), route=PYRAMID_SACRUD_HOME,
+              icon='glyphicon glyphicon-oil')
         ]
 
 
@@ -292,8 +296,6 @@ class DatabaseView(PageView):
         return self.response(form=self.form)
 
     def inst_type_form(self):
-        inistType = None
-
         return self.edit_form(InstitutionType)
 
     def inst_form(self):
@@ -311,7 +313,7 @@ class DatabaseView(PageView):
                 try:
                     phones = phone_str.split(';')
                 except AttributeError:
-                    phones=[]
+                    phones = []
                 n = []
                 for phone in phones:
                     try:
@@ -342,6 +344,12 @@ class DatabaseView(PageView):
             return appstruct
 
         return self.edit_form(Institution, struct_cb=struct_cb)
+
+    def query_form(self):
+        return self.edit_form(Query)
+
+    def mailing_form(self):
+        return self.edit_form(Mailing)
 
     def fetch(self, relation, **kwargs):
         request = self.request

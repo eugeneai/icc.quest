@@ -12,7 +12,9 @@ from sqlalchemy import (
     BigInteger,
     String,
     Text,
-    ForeignKey
+    ForeignKey,
+    LargeBinary,
+    DateTime
 )
 
 from sqlalchemy.dialects.postgresql import ARRAY
@@ -34,6 +36,7 @@ from sqlalchemy_utils import (
 )
 import colander
 import deform
+from deform.interfaces import FileUploadTempStore
 from uuid import uuid1 as _uuid
 from zope.i18nmessageid import MessageFactory
 
@@ -92,7 +95,7 @@ class InstitutionType(Base):
 WIDGET_phone = deform.widget.TextInputWidget(
     mask='+7 (999) 999-99-99'
 )
-    
+
 phone = colander.SchemaNode(colander.String(),
                             name='phone',
                             title=_('Phone'),
@@ -104,18 +107,18 @@ WIDGET_inst_type_uuid = deform.widget.Select2Widget()
 @generic_repr
 class Institution(Base):
     __tablename__ = 'institutions'
-    
+
     __colanderalchemy_config__ = {'title': _('Organizations'),
-                                  'overrides':{'phones':{
-                                      'typ':colander.Sequence(),
-                                      'title':_('Phones'),
-                                      'children':[
+                                  'overrides': {'phones': {
+                                      'typ': colander.Sequence(),
+                                      'title': _('Phones'),
+                                      'children': [
                                           phone
                                       ]
                                   }}
-                                  #'includes':[column]
-    }
-    
+                                  # 'includes':[column]
+                                  }
+
     uuid = Column(UUIDType, primary_key=True, default=_uuid,
                   info={'colanderalchemy': {
                       'typ': colander.String(),
@@ -123,70 +126,70 @@ class Institution(Base):
                   }})
     title = Column(String(256), unique=True,
                    info={'colanderalchemy': {
-                       #'typ': colander.String(),
-                       #'widget': deform.widget.HiddenWidget(),
-                       'title':_("Title (long)")
-                  }})
+                       # 'typ': colander.String(),
+                       # 'widget': deform.widget.HiddenWidget(),
+                       'title': _("Title (long)")
+                   }})
     short_title = Column(String(length=256), unique=True,
                          info={'colanderalchemy': {
                              # 'typ': colander.String(),
-                             #'widget': deform.widget.HiddenWidget(),
-                             'title':_("Short title")
+                             # 'widget': deform.widget.HiddenWidget(),
+                             'title': _("Short title")
                          }})
     tin = Column(BigInteger, unique=True,
-                info={'colanderalchemy': {
-                    # 'typ': colander.String(),
-                    #'widget': deform.widget.HiddenWidget(),
-                    'title':_("TIN")
-                }})  # ИНН
+                 info={'colanderalchemy': {
+                     # 'typ': colander.String(),
+                     # 'widget': deform.widget.HiddenWidget(),
+                     'title': _("TIN")
+                 }})  # ИНН
     rrc = Column(BigInteger, unique=False,
                  info={'colanderalchemy': {
                      # 'typ': colander.String(),
-                     #'widget': deform.widget.HiddenWidget(),
-                     'title':_("RRC")
+                     # 'widget': deform.widget.HiddenWidget(),
+                     'title': _("RRC")
                  }})  # КПП
     account_details = Column(Text, unique=False,
-                            info={'colanderalchemy': {
-                                # 'typ': colander.String(),
-                                #'widget': deform.widget.HiddenWidget(),
-                                'title':_("Account details")
-                            }})
+                             info={'colanderalchemy': {
+                                 # 'typ': colander.String(),
+                                 # 'widget': deform.widget.HiddenWidget(),
+                                 'title': _("Account details")
+                             }})
     details = Column(Text, unique=False,
                      info={'colanderalchemy': {
                          # 'typ': colander.String(),
-                         #'widget': deform.widget.HiddenWidget(),
-                         'title':_("Details")
+                         # 'widget': deform.widget.HiddenWidget(),
+                         'title': _("Details")
                      }})
     head_name = Column(String(length=256), unique=False,
                        info={'colanderalchemy': {
                            # 'typ': colander.String(),
-                           #'widget': deform.widget.HiddenWidget(),
-                           'title':_("Head name")
+                           # 'widget': deform.widget.HiddenWidget(),
+                           'title': _("Head name")
                        }})
     head_email = Column(EmailType, unique=True,
                         info={'colanderalchemy': {
                             # 'typ': colander.String(),
-                            #'widget': deform.widget.HiddenWidget(),
-                            'title':_("Head email")
+                            # 'widget': deform.widget.HiddenWidget(),
+                            'title': _("Head email")
                         }})
     query_email = Column(EmailType, unique=True,
-                        info={'colanderalchemy': {
-                            # 'typ': colander.String(),
-                            #'widget': deform.widget.HiddenWidget(),
-                            'title':_("Query email")
-                        }})
+                         info={'colanderalchemy': {
+                             # 'typ': colander.String(),
+                             # 'widget': deform.widget.HiddenWidget(),
+                             'title': _("Query email")
+                         }})
     phones = Column(String(length=255), unique=False,
                     info={'colanderalchemy': {
                         # 'typ': colander.String(),
-                        #'widget': deform.widget.HiddenWidget(),
-                        'title':_("Phones")
+                        # 'widget': deform.widget.HiddenWidget(),
+                        'title': _("Phones")
                     }})
 
     inst_type_uuid = Column(UUIDType, ForeignKey('institution_types.uuid'),
                             info={'colanderalchemy': {
                                 'typ': colander.String(),
                                 'widget': WIDGET_inst_type_uuid,
-                                'title':_("Institution type")
+                                'title': _("Institution type")
                             }})
     inst_type = relationship(InstitutionType, back_populates="institutions",
                              info={'colanderalchemy': {
@@ -304,3 +307,149 @@ class Institution(Base):
             )
 
             yield inst
+
+
+class Query(Base):
+    __tablename__ = 'queries'
+
+    __colanderalchemy_config__ = {'title': _('Query'),
+                                  # 'overrides':{'phones':{
+                                  #     'typ':colander.Sequence(),
+                                  #     'title':_('Phones'),
+                                  #     'children':[
+                                  #         phone
+                                  #     ]
+                                  # }}
+                                  # 'includes':[file_input]
+                                  }
+
+    uuid = Column(UUIDType, primary_key=True, default=_uuid,
+                  info={'colanderalchemy': {
+                      'typ': colander.String(),
+                      'widget': deform.widget.HiddenWidget(),
+                  }})
+    aim = Column(String(256),
+                 info={'colanderalchemy': {
+                       # 'typ': colander.String(),
+                       # 'widget': deform.widget.HiddenWidget(),
+                       'title': _("Aim")
+                       }})
+
+    description = Column(String(),
+                         info={'colanderalchemy': {
+                             # 'typ': colander.String(),
+                             # 'widget': deform.widget.HiddenWidget(),
+                             'title': _("Description")
+                         }})
+
+    comment = Column(String(),
+                     info={'colanderalchemy': {
+                         # 'typ': colander.String(),
+                         # 'widget': deform.widget.HiddenWidget(),
+                         'title': _("Comment")
+                     }})
+
+    form_file = Column(LargeBinary, unique=False,
+                       info={'colanderalchemy': {
+                           'typ': deform.FileData(),
+                           'widget': deform.widget.HiddenWidget(),
+                           'title': _("File of request form"),
+                           'ignore': True
+                       }})
+
+    source = Column(LargeBinary, unique=False,
+                    info={'colanderalchemy': {
+                        'typ': deform.FileData(),
+                        'widget': deform.widget.FileUploadWidget(tmpstore=FileUploadTempStore()),
+                        'title': _("Form file source")
+                    }})
+
+    mime_type = Column(String(length=256), unique=False,
+                       info={'colanderalchemy': {
+                           'widget': deform.widget.HiddenWidget(),
+                           'title': _("Mime type")
+                       }})
+
+    file_name = Column(String(length=256), unique=False,
+                       info={'colanderalchemy': {
+                           'title': _("File name")
+                       }})
+
+    table_name = Column(String(length=256), unique=False,
+                        info={'colanderalchemy': {
+                            'widget': deform.widget.HiddenWidget(),
+                            'title': _("Table name")
+                        }})
+
+    start = Column(DateTime,
+                   info={'colanderalchemy': {
+                       # 'typ': colander.String(),
+                       # 'widget': deform.widget.HiddenWidget(),
+                       'title': _('Starting time')
+                   }})
+
+    end = Column(DateTime,
+                 info={'colanderalchemy': {
+                     # 'typ': colander.String(),
+                     # 'widget': deform.widget.HiddenWidget(),
+                     'title': _('Ending time')
+                 }})
+
+
+class Mailing(Base):
+    __tablename__ = 'mailing'
+
+    __colanderalchemy_config__ = {'title': _('Mailing'),
+                                  # 'overrides': {'phones': {
+                                  #     'typ': colander.Sequence(),
+                                  #     'title': _('Phones'),
+                                  #     'children': [
+                                  #         phone
+                                  #     ]
+                                  # }}
+                                  # 'includes':[column]
+                                  }
+
+    uuid = Column(UUIDType, primary_key=True, default=_uuid,
+                  info={'colanderalchemy': {
+                      'typ': colander.String(),
+                      'widget': deform.widget.HiddenWidget(),
+                  }})
+
+    inst_uuid = Column(UUIDType,
+                       info={'colanderalchemy': {
+                           'typ': colander.String(),
+                           'widget': deform.widget.HiddenWidget(),
+                       }})
+
+    query_uuid = Column(UUIDType,
+                        info={'colanderalchemy': {
+                            'typ': colander.String(),
+                            'widget': deform.widget.HiddenWidget(),
+                        }})
+
+    data_uuid = Column(UUIDType,
+                       info={'colanderalchemy': {
+                           'typ': colander.String(),
+                           'widget': deform.widget.HiddenWidget(),
+                       }})
+
+    sign = Column(DateTime,
+                  info={'colanderalchemy': {
+                      # 'typ': colander.String(),
+                      'widget': deform.widget.HiddenWidget(),
+                      'title': _('Sign time')
+                  }})
+
+    update = Column(DateTime,
+                    info={'colanderalchemy': {
+                        # 'typ': colander.String(),
+                        'widget': deform.widget.HiddenWidget(),
+                        'title': _('Update time')
+                    }})
+
+    comment = Column(String(256),
+                     info={'colanderalchemy': {
+                         'widget': deform.widget.TextInputWidget(),
+                         'title': _("Comment")
+                     }})
