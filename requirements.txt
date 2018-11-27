@@ -25,11 +25,15 @@ phonenumbers
 # psycopg2-binary
 https://github.com/psycopg/psycopg2/archive/2_7_6.tar.gz
 
+
+
 -e git+https://github.com/isu-enterprise/isu.enterprise#egg=isu.enterprise
 -e git+https://github.com/isu-enterprise/isu.webapp#egg=isu.webapp
 -e git+https://github.com/isu-enterprise/isu.onece#egg=isu.onece
 -e git+https://github.com/isu-enterprise/icc.mvw#egg=icc.mvw
 -e git+https://github.com/isu-enterprise/pyramid_storage#egg=pyramid_storage
+# pyramid_elfinder
+-e git+https://github.com/ITCase/pyramid_elfinder.git#egg=pyramid_elfinder
 https://github.com/eugeneai/docx2html/archive/v0.2.4.tar.gz#egg=docx2html
 lxml
 #xlrd

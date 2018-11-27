@@ -1,8 +1,8 @@
 .PHONY: env dev develop install test edit \
 	py pot init-ru update-ru comp-cat \
 	upd-cat setup test setup-requs tests \
-	run-tests gdb-test clean serve server \
-    req req-dev elpy
+	run-tests gdb-test clean serve server serv \
+    req req-dev elpy init-db
 
 LCAT=src/icc/quest/locales
 
@@ -66,3 +66,8 @@ server:
 	pserve --reload icc.quest.ini
 
 serve: server
+
+serv: server
+
+init-db:
+	init_quest_db icc.quest.ini -c -v

@@ -26,6 +26,13 @@
       pattern="/doc/*traverse"
       factory=".pyramid.resource_factory"
       />
+  <view
+      route_name="doc"
+      renderer="icc.quest:templates/doc.pt"
+      view=".pyramid.PageView"
+      attr="main_loader"
+      />
+
 
   <!--
       <adapter

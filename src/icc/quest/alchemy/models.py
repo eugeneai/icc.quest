@@ -39,13 +39,14 @@ import deform
 from deform.interfaces import FileUploadTempStore
 from uuid import uuid1 as _uuid
 from zope.i18nmessageid import MessageFactory
+from sacrud import crud_sessionmaker
 
 _ = MessageFactory("icc.quest")
 
 event.listen(mapper, 'mapper_configured', setup_schema)
 
-DBSession = scoped_session(
-    sessionmaker(extension=ZopeTransactionExtension()))
+DBSession = crud_sessionmaker(scoped_session(
+    sessionmaker(extension=ZopeTransactionExtension())))
 Base = declarative_base()
 
 
@@ -349,36 +350,19 @@ class Query(Base):
                          'title': _("Comment")
                      }})
 
-    form_file = Column(LargeBinary, unique=False,
-                       info={'colanderalchemy': {
-                           'typ': deform.FileData(),
-                           'widget': deform.widget.HiddenWidget(),
-                           'title': _("File of request form"),
-                           'ignore': True
-                       }})
+    form_file_uuid = Column(LargeBinary, unique=False,
+                            info={'colanderalchemy': {
+                                'typ': deform.FileData(),
+                                'widget': deform.widget.HiddenWidget(),
+                                'title': _("File of request form"),
+                                'ignore': True
+                            }})
 
-    source = Column(LargeBinary, unique=False,
-                    info={'colanderalchemy': {
-                        'typ': deform.FileData(),
-                        'widget': deform.widget.FileUploadWidget(tmpstore=FileUploadTempStore()),
-                        'title': _("Form file source")
-                    }})
-
-    mime_type = Column(String(length=256), unique=False,
-                       info={'colanderalchemy': {
-                           'widget': deform.widget.HiddenWidget(),
-                           'title': _("Mime type")
-                       }})
-
-    file_name = Column(String(length=256), unique=False,
-                       info={'colanderalchemy': {
-                           'title': _("File name")
-                       }})
-
-    table_name = Column(String(length=256), unique=False,
+    table_uuid = Column(String(length=256), unique=False,
                         info={'colanderalchemy': {
                             'widget': deform.widget.HiddenWidget(),
-                            'title': _("Table name")
+                            'title': _("Table name"),
+                            'ignore': True
                         }})
 
     start = Column(DateTime,
@@ -388,12 +372,12 @@ class Query(Base):
                        'title': _('Starting time')
                    }})
 
-    end = Column(DateTime,
-                 info={'colanderalchemy': {
-                     # 'typ': colander.String(),
-                     # 'widget': deform.widget.HiddenWidget(),
-                     'title': _('Ending time')
-                 }})
+    finish = Column(DateTime,
+                    info={'colanderalchemy': {
+                        # 'typ': colander.String(),
+                        # 'widget': deform.widget.HiddenWidget(),
+                        'title': _('Finish time')
+                    }})
 
 
 class Mailing(Base):
@@ -453,3 +437,93 @@ class Mailing(Base):
                          'widget': deform.widget.TextInputWidget(),
                          'title': _("Comment")
                      }})
+
+
+class File(Base):
+    """Represents an uploaded file or a derivative from another file, e.g.,
+    form freated from an docx template.
+    """
+    __tablename__ = 'files'
+
+    __colanderalchemy_config__ = {'title': _('File'),
+                                  # 'overrides': {'phones': {
+                                  #     'typ': colander.Sequence(),
+                                  #     'title': _('Phones'),
+                                  #     'children': [
+                                  #         phone
+                                  #     ]
+                                  # }}
+                                  # 'includes':[column]
+                                  }
+
+    uuid = Column(UUIDType, primary_key=True, default=_uuid,
+                  info={'colanderalchemy': {
+                      'typ': colander.String(),
+                      'widget': deform.widget.HiddenWidget(),
+                  }})
+
+    content = Column(LargeBinary, unique=False,
+                     info={'colanderalchemy': {
+                         'typ': deform.FileData(),
+                         'widget': deform.widget.FileUploadWidget(tmpstore=FileUploadTempStore()),
+                         'title': _("Content of the file")
+                     }})
+
+    mime_type = Column(String(length=256),
+                       info={'colanderalchemy': {
+                           'widget': deform.widget.HiddenWidget(),
+                           'title': _("Mime type")
+                       }})
+
+    file_name = Column(String(length=256),
+                       info={'colanderalchemy': {
+                           'title': _("File name")
+                       }})
+
+    murmur_hash = Column(UUIDType,  # MurMur3 hash of the content
+                         info={'colanderalchemy': {
+                             'typ': colander.String(),
+                             'widget': deform.widget.HiddenWidget(),
+                         }})
+
+    prov_uuid = Column(UUIDType,  # Provenance UUID or NULL
+                       info={'colanderalchemy': {
+                           'typ': colander.String(),
+                           'widget': deform.widget.HiddenWidget(),
+                       }})
+
+
+class Table(Base):
+    """Represents a description of a table used to store
+    requested data"""
+
+    __tablename__ = 'tables'
+
+    __colanderalchemy_config__ = {'title': _('Table'),
+                                  # 'overrides': {'phones': {
+                                  #     'typ': colander.Sequence(),
+                                  #     'title': _('Phones'),
+                                  #     'children': [
+                                  #         phone
+                                  #     ]
+                                  # }}
+                                  # 'includes':[column]
+                                  }
+
+    uuid = Column(UUIDType, primary_key=True, default=_uuid,
+                  info={'colanderalchemy': {
+                      'typ': colander.String(),
+                      'widget': deform.widget.HiddenWidget(),
+                  }})
+
+    name = Column(String(length=255), unique=True,
+                  info={'colanderalchemy': {
+                      # 'typ': colander.String(),
+                      # 'widget': deform.widget.HiddenWidget(),
+                      'title': _('Name of the table in a RDBMS'),
+                  }})
+
+
+# TODO Query Data Tables' first attribute should be uuid,
+# the second must be mailing_uuid referencing Mailing.uuid (one-to-many)
+# as we suppose, that there are forms requiring adding new rows.
