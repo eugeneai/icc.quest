@@ -34,4 +34,5 @@ def configurator(config, **settings):
 
     config.load_zcml("icc.quest:configure.zcml")
     # config.add_static_view(path='icc.quest/templates/static', name='/APPSD')
-    config.set_crud_model_source('icc.quest.models')
+
+    config.set_crud_model_source('icc.quest.alchemy.models')

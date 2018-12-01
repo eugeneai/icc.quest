@@ -29,7 +29,7 @@
   <view
       route_name="doc"
       renderer="icc.quest:templates/doc.pt"
-      view=".pyramid.PageView"
+      view=".views.PageView"
       attr="main_loader"
       />
 
@@ -52,7 +52,7 @@
   <view
       route_name="test"
       renderer="icc.quest:templates/test.pt"
-      view=".pyramid.TestView"
+      view=".views.TestView"
       attr="test_form"
       />
 
@@ -63,7 +63,7 @@
   <view
       route_name="inst-type-fetch"
       renderer="icc.quest:templates/fetch.pt"
-      view=".pyramid.DatabaseView"
+      view=".views.DatabaseView"
       attr="fetch_institution_types"
       />
   <route
@@ -73,7 +73,7 @@
   <view
       route_name="edit-type"
       renderer="icc.quest:templates/edit-form.pt"
-      view=".pyramid.DatabaseView"
+      view=".views.DatabaseView"
       attr="inst_type_form"
       />
 
@@ -85,7 +85,7 @@
   <view
       route_name="inst-fetch"
       renderer="icc.quest:templates/fetch.pt"
-      view=".pyramid.DatabaseView"
+      view=".views.DatabaseView"
       attr="fetch_institutions"
       />
 
@@ -96,7 +96,7 @@
   <view
       route_name="edit-inst"
       renderer="icc.quest:templates/edit-form.pt"
-      view=".pyramid.DatabaseView"
+      view=".views.DatabaseView"
       attr="inst_form"
       />
 
@@ -107,7 +107,7 @@
   <view
       route_name="edit-query"
       renderer="icc.quest:templates/edit-form.pt"
-      view=".pyramid.DatabaseView"
+      view=".views.DatabaseView"
       attr="query_form"
       />
 
@@ -118,7 +118,7 @@
   <view
       route_name="edit-mailing"
       renderer="icc.quest:templates/edit-form.pt"
-      view=".pyramid.DatabaseView"
+      view=".views.DatabaseView"
       attr="mailing_form"
       />
 
@@ -129,7 +129,7 @@
   <view
       route_name="inst-types"
       renderer="json"
-      view=".pyramid.DatabaseView"
+      view=".views.DatabaseView"
       attr="inst_types"
       />
 
@@ -139,7 +139,7 @@
       />
   <view
       route_name="home"
-      view=".pyramid.ApplicationView"
+      view=".views.ApplicationView"
       attr="home"
       renderer="isu.webapp:templates/index.pt"
       />

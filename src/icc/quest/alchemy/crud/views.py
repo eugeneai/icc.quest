@@ -1,44 +1,197 @@
 
 from zope.i18nmessageid import MessageFactory
 from icc.quest.pyramid import ViewBase
+from pyramid.request import Request
+from pyramid.httpexceptions import HTTPNotFound, HTTPBadRequest
+
+import deform
+import uuid
+import transaction
+
+import icc.quest.alchemy.crud.events as events
 
 import logging
 logger = logging.getLogger("icc.quest")
 _ = MessageFactory("icc.quest")
 
 
-class CRUDResource(object):
-    def __init__(self, request):
-        self.request = request
+# class CRUDResource(object):
+#     def __init__(self, request):
+#         self.request = request
 
-    def __getitem__(self, name):
-        if name.startswith("@@"):
-            raise KeyError("wrong name")
-        return self
+#     def __getitem__(self, name):
+#         if name.startswith("@@"):
+#             raise KeyError("wrong name")
+#         return self
+
+
+class CRUDContext(object):
+    def __init__(self, **kwargs):
+        for k, v in kwargs.items():
+            setattr(self, k, v)
+
+    def __str__(self):
+        name = self.__class__.__name__
+        values = []
+        for attr in dir(self):
+            if attr.startswith('_'):
+                continue
+            values.append("{}={}".format(attr,
+                                         repr(getattr(self, attr))))
+
+        return "{}({})".format(name, ','.join(values))
+
+
+RETBTN = \
+    _("""<a href='{}' class='btn btn-success'>Back to table</a>""")
 
 
 class CRUDView(ViewBase):
     """A base class for crud view
     """
 
+    ID = 'id'  # Generic index attribute name
+
     def __init__(self, *args, **kwargs):
         super(CRUDView, self).__init__(*args, **kwargs)
         self.model = None
+
+        self.crudctx = CRUDContext(action=None)
+        if isinstance(self.request, Request):
+            self.crudctx.action = self.request.matchdict.get(
+                'action', 'default')
 
     @property
     def title(self):
         return _("Editing relation {}").format(self.model)
 
     def __call__(self, *args, **kwargs):
-        self.model = 'TABLE'
-        print(args)
-        print(kwargs)
+        ctx = self.crudctx
+        ctx.relation = None
+        ctx.rel_name = self.request.matchdict.get('relation', None)
+        assert (ctx.rel_name is not None)
+        src_module = self.registry.crud_model_source_config.module
+
+        if src_module is None:
+            raise ValueError('crud model source is not configured')
+
+        try:
+            ctx.relation = getattr(src_module, ctx.rel_name)
+        except AttributeError:
+            raise HTTPBadRequest(
+                'relation "{}" not found'.format(self.ctx.rel_name))
+        schema = ctx.schema = ctx.relation.__colanderalchemy__
+        print(schema.includes)
+
+        ctx.buttons = [_('submit')]
+        get = self.request.GET
+        ctx.id = get.get(self.__class__.ID, None)
+
+        if ctx.id is not None:
+            ctx.id = uuid.UUID(ctx.id)
+
+        ctx.session = self.registry.dbsession()
+
+        m = None
+        try:
+            m = getattr(self, ctx.action)
+            logger.debug('CRUD Action context {}'.format(ctx))
+        except AttributeError as e:
+            raise HTTPNotFound(
+                'action: "{}" has no handler'.format(ctx.action))
+
+        e = events.CRUDContextCreated(ctx)
+        self.registry.notify(e)
+
+        if m is not None:
+            return m(*args, **kwargs)
+
         return self.response()
 
     @property
     def content(self):
         return "Content"
 
+    def edit(self):
+        retbtn = RETBTN.format(self.request.path.replace('/edit', ''))
 
-def resource_factory(request):
-    return CRUDResource(request)
+        ctx = self.crudctx
+        reg = self.registry
+
+        if ctx.id is not None:
+            ctx.buttons.append(_('delete'))
+
+        form = deform.Form(ctx.schema, buttons=ctx.buttons)
+
+        ctx.form = form
+
+        if ctx.id is not None:
+            ctx.context = ctx.session\
+                             .query(ctx.relation)\
+                             .get(ctx.id)
+        else:
+            ctx.context = ctx.relation()
+            e = events.Created(ctx)
+            reg.notify(e)
+
+        post = self.request.POST
+        if 'submit' in post:
+            controls = ctx.controls = post.items()
+            try:
+                ctx.appstruct = form.validate(controls)
+            except deform.ValidationFailure as e:
+                content = e.render()
+                return self.response(content=content, crudctx=ctx)
+            else:
+                e = events.AppstructToContext(ctx)
+                self.registry.notify(e)
+                ctx.context = ctx.schema.\
+                    objectify(ctx.appstruct,
+                              context=ctx.context)
+
+                ctx.session.add(ctx.context)
+                transaction.commit()
+
+                content = "Результат редактирования :{}. <br> {}"\
+                    .format(ctx.appstruct, retbtn)
+
+                return self.response(content=content, crudctx=ctx)
+        elif 'delete' in post:
+            self.message = 'OK, Deleted, Тип того... (на самом деле нет)'
+            content = 'Запись удалена. Удачного вам дня. < br/>"\
+            " На самом деле нет ' + retbtn
+            return self.response(content=content)
+
+        appstruct = ctx.appstruct = ctx.schema.dictify(ctx.context)
+        e = events.ContextToAppstruct(ctx)
+        reg.notify(e)
+
+        content = form.render(appstruct=appstruct)
+        return self.response(content=content, crudctx=ctx)
+
+    def default(self):
+        ctx = self.crudctx
+        ctx.fetch = {}
+        rel = ctx.relation
+
+        try:
+            ctx.fetch = rel.__crudcontext__['fetch']
+        except AttributeError:
+            pass
+        except KeyError:
+            pass
+
+        e = events.BeforeFetch(ctx)
+        self.registry.notify(e)
+        return self.fetch_response(ctx.fetch)
+
+    def fetch_response(self, fields):
+        ctx = self.crudctx
+        request = self.request
+        start = request.GET.get('start', 0)
+        length = request.GET.get('length', 200)
+        session = ctx.session
+        result = session.query(ctx.relation).offset(start).limit(length).all()
+        std = self.response(context=result)
+        std.update(fields)
+        return std

@@ -16,13 +16,37 @@
       />
   -->
 
+  <subscriber
+      for=".events.BeforeFetch"
+      handler=".subscribers.fetch_setup"
+      />
+
+  <subscriber
+      for=".events.ContextToAppstruct"
+      handler=".subscribers.to_appstruct"
+      />
+
+  <subscriber
+      for=".events.AppstructToContext"
+      handler=".subscribers.to_context"
+      />
+
   <route
-      name="crud"
-      pattern="/crud/*traverse"
-      factory=".views.resource_factory"
+      name="crud-default"
+      pattern="/crud/{relation}"
       />
   <view
-      route_name="crud"
+      route_name="crud-default"
+      renderer="icc.quest:templates/fetch.pt"
+      view=".views.CRUDView"
+      />
+
+  <route
+      name="crud-action"
+      pattern="/crud/{relation}/{action}"
+      />
+  <view
+      route_name="crud-action"
       renderer="icc.quest:templates/crud.pt"
       view=".views.CRUDView"
       />
