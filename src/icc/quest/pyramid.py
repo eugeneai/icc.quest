@@ -86,14 +86,6 @@ class DummyStorage:
 class ViewBase(View):
     title = _("Statistic acquisition platform")
 
-    def response(self, **kwargs):
-        resp = {
-            'view': self,
-            'context': self.context
-        }
-        resp.update(kwargs)
-        return resp
-
     @property
     def panel_items(self):
         P = PanelItem
@@ -119,14 +111,6 @@ class PageView(ViewBase):
         self.exception = ""
         self.level = "success"
         self.content = ""
-
-    def response(self, **kwargs):
-        resp = {
-            'view': self,
-            'context': self.context
-        }
-        resp.update(kwargs)
-        return resp
 
     def respjson(self, **kwargs):
         resp = {
@@ -218,7 +202,7 @@ RETBTN = \
     """<a href='{}' class='btn btn-success'>Back to table</a>"""
 
 
-class DatabaseView(PageView):
+class DatabaseView(ViewBase):
     title = _('Database Editing')
 
     @property
@@ -390,7 +374,7 @@ class ApplicationView(ViewBase):
         return "<h1>Hello!</h1>"
 
 
-class TestView(PageView):
+class TestView(ViewBase):
     title = 'Test page'
 
     def test_form(self):

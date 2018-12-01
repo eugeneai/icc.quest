@@ -1,0 +1,144 @@
+<configure xmlns="http://pylonshq.com/pyramid">
+  <include package="pyramid_zcml" />
+
+  <!--
+  <translationdir dir="icc.quest:locales/"/>
+
+  <subscriber
+      for="pyramid.events.NewRequest"
+      handler=".i18n.add_localizer"
+      />
+
+
+  <subscriber
+      for="pyramid.events.BeforeRender"
+      handler=".crud.add_base_template"
+      />
+  -->
+
+  <route
+      name="crud"
+      pattern="/crud/*traverse"
+      factory=".views.resource_factory"
+      />
+  <view
+      route_name="crud"
+      renderer="icc.quest:templates/crud.pt"
+      view=".views.CRUDView"
+      />
+
+
+  <!--
+      <adapter
+      factory="isu.college.pyramid.StudyPlanVew"
+      />
+      <utility
+      component="isu.college.pyramid.splistview"
+      name="study-plans"
+      />
+  -->
+  <!-- application routes and views -->
+  <!--
+
+  <route
+      name="test"
+      pattern="/test/"
+      />
+  <view
+      route_name="test"
+      renderer="icc.quest:templates/test.pt"
+      view=".pyramid.TestView"
+      attr="test_form"
+      />
+
+  <route
+      name="inst-type-fetch"
+      pattern="/institution-type"
+      />
+  <view
+      route_name="inst-type-fetch"
+      renderer="icc.quest:templates/fetch.pt"
+      view=".pyramid.DatabaseView"
+      attr="fetch_institution_types"
+      />
+  <route
+      name="edit-type"
+      pattern="/institution-type/edit"
+      />
+  <view
+      route_name="edit-type"
+      renderer="icc.quest:templates/edit-form.pt"
+      view=".pyramid.DatabaseView"
+      attr="inst_type_form"
+      />
+
+
+  <route
+      name="inst-fetch"
+      pattern="/institution"
+      />
+  <view
+      route_name="inst-fetch"
+      renderer="icc.quest:templates/fetch.pt"
+      view=".pyramid.DatabaseView"
+      attr="fetch_institutions"
+      />
+
+  <route
+      name="edit-inst"
+      pattern="/institution/edit"
+      />
+  <view
+      route_name="edit-inst"
+      renderer="icc.quest:templates/edit-form.pt"
+      view=".pyramid.DatabaseView"
+      attr="inst_form"
+      />
+
+  <route
+      name="edit-query"
+      pattern="/query/edit"
+      />
+  <view
+      route_name="edit-query"
+      renderer="icc.quest:templates/edit-form.pt"
+      view=".pyramid.DatabaseView"
+      attr="query_form"
+      />
+
+  <route
+      name="edit-mailing"
+      pattern="/mailing/edit"
+      />
+  <view
+      route_name="edit-mailing"
+      renderer="icc.quest:templates/edit-form.pt"
+      view=".pyramid.DatabaseView"
+      attr="mailing_form"
+      />
+
+  <route
+      pattern="api/v1.0/inst_types"
+      name="inst-types"
+      />
+  <view
+      route_name="inst-types"
+      renderer="json"
+      view=".pyramid.DatabaseView"
+      attr="inst_types"
+      />
+
+  <route
+      pattern="/"
+      name="home"
+      />
+  <view
+      route_name="home"
+      view=".pyramid.ApplicationView"
+      attr="home"
+      renderer="isu.webapp:templates/index.pt"
+      />
+
+
+-->
+</configure>
