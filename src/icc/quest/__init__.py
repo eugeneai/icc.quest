@@ -1,6 +1,7 @@
 from pkg_resources import resource_filename
 import os
 import logging
+from sqlalchemy.orm import configure_mappers
 # from __future__ import print_function
 __import__('pkg_resources').declare_namespace(__name__)
 
@@ -33,6 +34,5 @@ def configurator(config, **settings):
         ))
 
     config.load_zcml("icc.quest:configure.zcml")
-    # config.add_static_view(path='icc.quest/templates/static', name='/APPSD')
 
     config.set_crud_model_source('icc.quest.alchemy.models')

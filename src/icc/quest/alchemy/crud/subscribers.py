@@ -12,9 +12,18 @@ from sqlalchemy_utils.types.phone_number import PhoneNumberParseException
 
 def fetch_setup(e):
     global FETCH_SETUP
+
     ctx = e.context
-    s = FETCH_SETUP.get(ctx.relation, {})
-    ctx.fetch = s
+    s = FETCH_SETUP.get(ctx.relation, None)
+    if s is not None:
+        ctx.fetch = s
+    else:
+        fetch = ctx.fetch
+        fetch['id'] = 'uuid'
+        fields = fetch['fields']
+        # filter out all refernces
+        fetch['fields'] = [f for f in fields
+                           if not f.name.endswith('uuid')]
 
 
 def to_appstruct(e):

@@ -1,4 +1,3 @@
-
 from zope.i18nmessageid import MessageFactory
 from icc.quest.pyramid import ViewBase
 from pyramid.request import Request
@@ -8,7 +7,9 @@ import deform
 import uuid
 import transaction
 
+from collections import namedtuple
 import icc.quest.alchemy.crud.events as events
+from pprint import pprint
 
 import logging
 logger = logging.getLogger("icc.quest")
@@ -46,6 +47,10 @@ RETBTN = \
     _("""<a href='{}' class='btn btn-success'>Back to table</a>""")
 
 
+class Attr(namedtuple('Heading', ['name', 'title'])):
+    pass
+
+
 class CRUDView(ViewBase):
     """A base class for crud view
     """
@@ -61,27 +66,50 @@ class CRUDView(ViewBase):
             self.crudctx.action = self.request.matchdict.get(
                 'action', 'default')
 
+    def response(self, **kwargs):
+        resp = super(CRUDView, self).response(**kwargs)
+        resp['crudctx'] = self.crudctx
+        return resp
+
     @property
     def title(self):
-        return _("Editing relation {}").format(self.model)
+        ctx = self.crudctx
+        action = ctx.action
+        if action == 'edit':
+            return _("Editing relation {}").\
+                format(self.crudctx.schema.title)
+        elif action == 'browse':
+            return self.crudctx.schema.title
+        else:
+            return _('List of tables')
+
+    def _get_config(self):
+        cfg = self.registry.crud_model_source_config
+        module_ = cfg.module
+        if module_ is None:
+            raise ValueError('crud model source is not configured')
+
+        return cfg
 
     def __call__(self, *args, **kwargs):
         ctx = self.crudctx
         ctx.relation = None
         ctx.rel_name = self.request.matchdict.get('relation', None)
         assert (ctx.rel_name is not None)
-        src_module = self.registry.crud_model_source_config.module
 
-        if src_module is None:
-            raise ValueError('crud model source is not configured')
+        crud_config = self._get_config()
 
         try:
-            ctx.relation = getattr(src_module, ctx.rel_name)
+            ctx.relation = crud_config[ctx.rel_name]
         except AttributeError:
             raise HTTPBadRequest(
                 'relation "{}" not found'.format(self.ctx.rel_name))
-        schema = ctx.schema = ctx.relation.__colanderalchemy__
-        print(schema.includes)
+
+        # print('CRUD --------')
+        # pprint(crud_config.relations)
+        schema = ctx.schema = crud_config.schema(ctx.relation)
+        ctx.mapper = crud_config.mappers[ctx.relation]
+        # print(schema.includes)
 
         ctx.buttons = [_('submit')]
         get = self.request.GET
@@ -110,10 +138,13 @@ class CRUDView(ViewBase):
 
     @property
     def content(self):
-        return "Content"
+        return "\n<!-- empty content by default -->\n"
 
     def edit(self):
-        retbtn = RETBTN.format(self.request.path.replace('/edit', ''))
+        retbtn = RETBTN.format(
+            self.request.route_path('crud-action',
+                                    relation=self.crudctx.rel_name,
+                                    action='browse'))
 
         ctx = self.crudctx
         reg = self.registry
@@ -141,7 +172,7 @@ class CRUDView(ViewBase):
                 ctx.appstruct = form.validate(controls)
             except deform.ValidationFailure as e:
                 content = e.render()
-                return self.response(content=content, crudctx=ctx)
+                return self.response(content=content)
             else:
                 e = events.AppstructToContext(ctx)
                 self.registry.notify(e)
@@ -155,7 +186,7 @@ class CRUDView(ViewBase):
                 content = "Результат редактирования :{}. <br> {}"\
                     .format(ctx.appstruct, retbtn)
 
-                return self.response(content=content, crudctx=ctx)
+                return self.response(content=content)
         elif 'delete' in post:
             self.message = 'OK, Deleted, Тип того... (на самом деле нет)'
             content = 'Запись удалена. Удачного вам дня. < br/>"\
@@ -167,11 +198,35 @@ class CRUDView(ViewBase):
         reg.notify(e)
 
         content = form.render(appstruct=appstruct)
-        return self.response(content=content, crudctx=ctx)
+        return self.response(content=content)
+
+    class TableView(object):
+        def __init__(self, name, relation):
+            self.relation = relation
+            self.name = name
+            self.schema = relation.__colanderalchemy__
+
+        @property
+        def table_name(self):
+            return self.relation.__tablename__
+
+        @property
+        def title(self):
+            return self.schema.title
 
     def default(self):
+        cfg = self._get_config()
+        metadata = cfg.metadata
+        relations = cfg.relations  # Mapping Rel Name -> a DeclarativeMeta
+        #tables = metadata.sorted_tables
+        self.context = [CRUDView.TableView(name,
+                                           rel)
+                        for name, rel in relations.items()]
+        return self.response(content=self.title)
+
+    def browse(self):
         ctx = self.crudctx
-        ctx.fetch = {}
+        fetch = ctx.fetch = {}
         rel = ctx.relation
 
         try:
@@ -181,8 +236,22 @@ class CRUDView(ViewBase):
         except KeyError:
             pass
 
+        schema = ctx.schema
+
+        fetch['title'] = schema.title
+        rel = ctx.relation
+        mapper = ctx.mapper
+        fields = []
+        for c in mapper.columns:
+            name = c.name
+            title = schema[name].title
+            # check existence in schema
+            fields.append(Attr(name=name, title=title))
+        fetch['fields'] = fields
+
         e = events.BeforeFetch(ctx)
         self.registry.notify(e)
+
         return self.fetch_response(ctx.fetch)
 
     def fetch_response(self, fields):
@@ -191,7 +260,10 @@ class CRUDView(ViewBase):
         start = request.GET.get('start', 0)
         length = request.GET.get('length', 200)
         session = ctx.session
+
         result = session.query(ctx.relation).offset(start).limit(length).all()
         std = self.response(context=result)
         std.update(fields)
+        # print('response data ----------')
+        # pprint(std)
         return std

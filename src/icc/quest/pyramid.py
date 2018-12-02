@@ -75,12 +75,14 @@ class ViewBase(View):
     def panel_items(self):
         P = PanelItem
         return [
-            P(_('Dashboard'), route='home', icon='glyphicon glyphicon-dashboard'),
-            P(_('Institutions'), route='inst-fetch',
+            P(_('Dashboard'), route='home',
+              icon='glyphicon glyphicon-dashboard'),
+            # P(_('Institutions'), route='inst-fetch',
+            #   icon='glyphicon glyphicon-briefcase'),
+            # P(_('Institution Types'), route='inst-type-fetch',
+            #   icon='glyphicon glyphicon-pencil'),
+            P(_('Tables'), route='crud-default',
               icon='glyphicon glyphicon-briefcase'),
-            P(_('Institution Types'), route='inst-type-fetch',
-              icon='glyphicon glyphicon-pencil'),
-
             P(_('SACRUD'), route=PYRAMID_SACRUD_HOME,
               icon='glyphicon glyphicon-oil')
         ]

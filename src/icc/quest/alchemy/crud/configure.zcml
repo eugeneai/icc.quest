@@ -17,6 +17,11 @@
   -->
 
   <subscriber
+      for="pyramid.events.ApplicationCreated"
+      handler=".setup_orm_mapping"
+      />
+
+  <subscriber
       for=".events.BeforeFetch"
       handler=".subscribers.fetch_setup"
       />
@@ -33,12 +38,13 @@
 
   <route
       name="crud-default"
-      pattern="/crud/{relation}"
+      pattern="/crud"
       />
   <view
       route_name="crud-default"
-      renderer="icc.quest:templates/fetch.pt"
+      renderer="icc.quest:templates/relations.pt"
       view=".views.CRUDView"
+      attr="default"
       />
 
   <route
@@ -52,15 +58,6 @@
       />
 
 
-  <!--
-      <adapter
-      factory="isu.college.pyramid.StudyPlanVew"
-      />
-      <utility
-      component="isu.college.pyramid.splistview"
-      name="study-plans"
-      />
-  -->
   <!-- application routes and views -->
   <!--
 

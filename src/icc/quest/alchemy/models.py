@@ -1,7 +1,7 @@
 # SQL Alchemy subsystem
 from colanderalchemy import setup_schema
 from sqlalchemy.orm import mapper
-from sqlalchemy import event
+from sqlalchemy import event, MetaData
 from pyramid.security import Allow, Everyone
 import csv
 import re
@@ -43,12 +43,17 @@ from sacrud import crud_sessionmaker
 
 _ = MessageFactory("icc.quest")
 
-event.listen(mapper, 'mapper_configured', setup_schema)
+
+# def setup_schema_(mapper, class_):
+#     setup_schema(mapper, class_)
+#     print("SEUP BASIC:", mapper, class_)
+
+
+# event.listen(mapper, 'mapper_configured', setup_schema_)
 
 DBSession = crud_sessionmaker(scoped_session(
     sessionmaker(extension=ZopeTransactionExtension())))
 Base = declarative_base()
-
 
 RE_EMAIL = re.compile(
     r"[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+"
@@ -465,7 +470,8 @@ class File(Base):
     content = Column(LargeBinary, unique=False,
                      info={'colanderalchemy': {
                          'typ': deform.FileData(),
-                         'widget': deform.widget.FileUploadWidget(tmpstore=FileUploadTempStore()),
+                         'widget': deform.widget.FileUploadWidget(
+                             tmpstore=FileUploadTempStore()),
                          'title': _("Content of the file")
                      }})
 

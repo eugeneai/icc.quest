@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: icc.quest 1.0\n"
 "Report-Msgid-Bugs-To: eugeneai@irnok.net\n"
-"POT-Creation-Date: 2018-11-19 02:18+0800\n"
+"POT-Creation-Date: 2018-12-03 00:39+0800\n"
 "PO-Revision-Date: 2018-11-18 14:25+0800\n"
 "Last-Translator: Evgeny Cherkashin <eugeneai@irnok.net>\n"
 "Language: ru\n"
@@ -18,199 +18,231 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.6.0\n"
 
-#: ./src/icc/quest/pyramid.py:87
-msgid "Statistic acquisition platform"
-msgstr "Система сбора статистики"
-
-#: ./src/icc/quest/pyramid.py:101
-msgid "Dashboard"
-msgstr "Общий обзор"
-
-#: ./src/icc/quest/pyramid.py:102 ./src/icc/quest/pyramid.py:374
-msgid "Institutions"
-msgstr "Учреждения"
-
-#: ./src/icc/quest/pyramid.py:104
-msgid "Institution Types"
-msgstr "Виды учреждений"
-
-#: ./src/icc/quest/pyramid.py:107
-msgid "SACRUD"
-msgstr "Админка"
-
-#: ./src/icc/quest/pyramid.py:193 ./src/icc/quest/pyramid.py:403
-msgid "Successfully loaded"
-msgstr "Страница загружена"
-
-#: ./src/icc/quest/pyramid.py:197
-msgid "Cannot load page. It seems it does not exist."
-msgstr "Невозможно загрузить страницу, кажется она не существует."
-
-#: ./src/icc/quest/pyramid.py:222
-msgid "Database Editing"
-msgstr "Редактирование базы данных"
-
-#: ./src/icc/quest/pyramid.py:241
-msgid "submit"
-msgstr "отправить"
-
-#: ./src/icc/quest/pyramid.py:243
-msgid "delete"
-msgstr "удалить"
-
-#: ./src/icc/quest/pyramid.py:367
-msgid "Institution types"
-msgstr "Вид учреждения"
-
-#: ./src/icc/quest/alchemy/models.py:78 ./src/icc/quest/pyramid.py:368
-msgid "Abbreviation"
-msgstr "Аббревиатура"
-
-#: ./src/icc/quest/pyramid.py:368
-msgid "Title"
-msgstr "Название"
-
-#: ./src/icc/quest/pyramid.py:375
-msgid "Short Title"
-msgstr "Краткое название"
-
-#: ./src/icc/quest/pyramid.py:375
-msgid "Head Name"
-msgstr "Email руководителя"
-
-#: ./src/icc/quest/pyramid.py:376
-msgid "query_email"
-msgstr "Email рассылки"
-
-#: ./src/icc/quest/pyramid.py:376
-msgid "phones"
-msgstr "телефоны"
-
-#: ./src/icc/quest/pyramid.py:383
+#: ./src/icc/quest/views.py:26
 msgid "Statistic acquisition platform DASHBOARD"
 msgstr "Система сбора статистики: Общий обзор"
 
-#: ./src/icc/quest/alchemy/models.py:67
-msgid "Type of organizations"
-msgstr "Виды организаций"
+#: ./src/icc/quest/views.py:46 ./src/icc/quest/views.py:136
+msgid "Successfully loaded"
+msgstr "Страница загружена"
 
-#: ./src/icc/quest/alchemy/models.py:73
-msgid "UUID"
-msgstr "UUID"
+#: ./src/icc/quest/views.py:140
+msgid "Cannot load page. It seems it does not exist."
+msgstr "Невозможно загрузить страницу, кажется она не существует."
 
-#: ./src/icc/quest/alchemy/models.py:86
-msgid "Tile (long)"
-msgstr "Полное название"
+#: ./src/icc/quest/views.py:175
+msgid "Institution types"
+msgstr "Вид учреждения"
 
-#: ./src/icc/quest/alchemy/models.py:101
-msgid "Phone"
-msgstr "Телефон"
+#: ./src/icc/quest/alchemy/models.py:84 ./src/icc/quest/views.py:177
+msgid "Abbreviation"
+msgstr "Аббревиатура"
 
-#: ./src/icc/quest/alchemy/models.py:111
-msgid "Organizations"
-msgstr "Организации"
+#: ./src/icc/quest/views.py:178
+msgid "Title"
+msgstr "Название"
 
-#: ./src/icc/quest/alchemy/models.py:114 ./src/icc/quest/alchemy/models.py:185
-msgid "Phones"
-msgstr "Телефоны"
+#: ./src/icc/quest/views.py:181
+msgid "Institutions"
+msgstr "Учреждения"
 
-#: ./src/icc/quest/alchemy/models.py:131
-msgid "Title (long)"
-msgstr "Полное название"
-
-#: ./src/icc/quest/alchemy/models.py:137
+#: ./src/icc/quest/alchemy/models.py:143 ./src/icc/quest/views.py:183
 msgid "Short title"
 msgstr "Краткое название"
 
-#: ./src/icc/quest/alchemy/models.py:143
-msgid "TIN"
-msgstr "ИНН"
-
-#: ./src/icc/quest/alchemy/models.py:149
-msgid "RRC"
-msgstr "КПП"
-
-#: ./src/icc/quest/alchemy/models.py:155
-msgid "Account details"
-msgstr "Данные счета"
-
-#: ./src/icc/quest/alchemy/models.py:161
-msgid "Details"
-msgstr "Данные организации"
-
-#: ./src/icc/quest/alchemy/models.py:167
-msgid "Head name"
-msgstr "Руководитель"
-
-#: ./src/icc/quest/alchemy/models.py:173
-msgid "Head email"
-msgstr "Email руководителя"
-
-#: ./src/icc/quest/alchemy/models.py:179
+#: ./src/icc/quest/alchemy/models.py:185 ./src/icc/quest/views.py:184
 msgid "Query email"
 msgstr "Email рассылки"
 
-#: ./src/icc/quest/alchemy/models.py:192
+#: ./src/icc/quest/alchemy/models.py:173 ./src/icc/quest/views.py:185
+msgid "Head name"
+msgstr "Руководитель"
+
+#: ./src/icc/quest/alchemy/models.py:120 ./src/icc/quest/alchemy/models.py:191
+#: ./src/icc/quest/views.py:186
+msgid "Phones"
+msgstr "Телефоны"
+
+#: ./src/icc/quest/pyramid.py:72
+msgid "Statistic acquisition platform"
+msgstr "Система сбора статистики"
+
+#: ./src/icc/quest/pyramid.py:78
+msgid "Dashboard"
+msgstr "Общий обзор"
+
+#: ./src/icc/quest/pyramid.py:84
+msgid "Tables"
+msgstr "Таблицы"
+
+#: ./src/icc/quest/pyramid.py:86
+msgid "SACRUD"
+msgstr "Админка"
+
+#: ./src/icc/quest/alchemy/models.py:73
+msgid "Type of organizations"
+msgstr "Виды организаций"
+
+#: ./src/icc/quest/alchemy/models.py:79
+msgid "UUID"
+msgstr "UUID"
+
+#: ./src/icc/quest/alchemy/models.py:92
+msgid "Tile (long)"
+msgstr "Полное название"
+
+#: ./src/icc/quest/alchemy/models.py:107
+msgid "Phone"
+msgstr "Телефон"
+
+#: ./src/icc/quest/alchemy/models.py:117
+msgid "Organizations"
+msgstr "Организации"
+
+#: ./src/icc/quest/alchemy/models.py:137
+msgid "Title (long)"
+msgstr "Полное название"
+
+#: ./src/icc/quest/alchemy/models.py:149
+msgid "TIN"
+msgstr "ИНН"
+
+#: ./src/icc/quest/alchemy/models.py:155
+msgid "RRC"
+msgstr "КПП"
+
+#: ./src/icc/quest/alchemy/models.py:161
+msgid "Account details"
+msgstr "Данные счета"
+
+#: ./src/icc/quest/alchemy/models.py:167
+msgid "Details"
+msgstr "Данные организации"
+
+#: ./src/icc/quest/alchemy/models.py:179
+msgid "Head email"
+msgstr "Email руководителя"
+
+#: ./src/icc/quest/alchemy/models.py:198
 msgid "Institution type"
 msgstr "Вид учреждения"
 
-#: ./src/icc/quest/alchemy/models.py:315
+#: ./src/icc/quest/alchemy/models.py:321
 msgid "Query"
 msgstr "Запрос"
 
-#: ./src/icc/quest/alchemy/models.py:335
+#: ./src/icc/quest/alchemy/models.py:341
 msgid "Aim"
 msgstr "Цель"
 
-#: ./src/icc/quest/alchemy/models.py:342
+#: ./src/icc/quest/alchemy/models.py:348
 msgid "Description"
 msgstr "Описание"
 
-#: ./src/icc/quest/alchemy/models.py:349 ./src/icc/quest/alchemy/models.py:454
+#: ./src/icc/quest/alchemy/models.py:355 ./src/icc/quest/alchemy/models.py:443
 msgid "Comment"
 msgstr "Комментарий"
 
-#: ./src/icc/quest/alchemy/models.py:356
+#: ./src/icc/quest/alchemy/models.py:362
 msgid "File of request form"
 msgstr "Файл формы запроса"
 
-#: ./src/icc/quest/alchemy/models.py:364
-msgid "Form file source"
-msgstr "Исходный файл запроса"
-
-#: ./src/icc/quest/alchemy/models.py:370
-msgid "Mime type"
-msgstr "Тип файла"
-
-#: ./src/icc/quest/alchemy/models.py:375
-msgid "File name"
-msgstr "Имя файла"
-
-#: ./src/icc/quest/alchemy/models.py:381
+#: ./src/icc/quest/alchemy/models.py:369
+#: ./src/icc/quest/templates/relations.pt:21
+#: ./src/icc/quest/templates/relations.pt:38
 msgid "Table name"
 msgstr "Наименование таблицы"
 
-#: ./src/icc/quest/alchemy/models.py:388
+#: ./src/icc/quest/alchemy/models.py:377
 msgid "Starting time"
 msgstr "Время начала"
 
-#: ./src/icc/quest/alchemy/models.py:395
-msgid "Ending time"
-msgstr "Время завершения"
+#: ./src/icc/quest/alchemy/models.py:384
+msgid "Finish time"
+msgstr "Время окончания"
 
-#: ./src/icc/quest/alchemy/models.py:402
+#: ./src/icc/quest/alchemy/models.py:391
 msgid "Mailing"
 msgstr "Рассылка"
 
-#: ./src/icc/quest/alchemy/models.py:441
+#: ./src/icc/quest/alchemy/models.py:430
 msgid "Sign time"
 msgstr "Время подписания"
 
-#: ./src/icc/quest/alchemy/models.py:448
+#: ./src/icc/quest/alchemy/models.py:437
 msgid "Update time"
 msgstr "Время последнего обновления"
 
+#: ./src/icc/quest/alchemy/models.py:453
+msgid "File"
+msgstr "Файл"
+
+#: ./src/icc/quest/alchemy/models.py:475
+msgid "Content of the file"
+msgstr "Содержимое файла"
+
+#: ./src/icc/quest/alchemy/models.py:481
+msgid "Mime type"
+msgstr "Тип файла"
+
+#: ./src/icc/quest/alchemy/models.py:486
+msgid "File name"
+msgstr "Имя файла"
+
+#: ./src/icc/quest/alchemy/models.py:508
+msgid "Table"
+msgstr "Таблица"
+
+#: ./src/icc/quest/alchemy/models.py:529
+msgid "Name of the table in a RDBMS"
+msgstr "Название таблица в РБД"
+
+#: ./src/icc/quest/alchemy/crud/views.py:47
+msgid "<a href='{}' class='btn btn-success'>Back to table</a>"
+msgstr "<a href='{}' class='btn btn-success'>Назад к таблице</a>"
+
+#: ./src/icc/quest/alchemy/crud/views.py:76
+msgid "Editing relation {}"
+msgstr "Редактирование отношения '{}'"
+
+#: ./src/icc/quest/alchemy/crud/views.py:108
+msgid "submit"
+msgstr "отправить"
+
+#: ./src/icc/quest/alchemy/crud/views.py:147
+msgid "delete"
+msgstr "удалить"
+
+#: ./src/icc/quest/alchemy/crud/views.py:225
+msgid "List of tables"
+msgstr "Список таблиц"
+
+#: ./src/icc/quest/templates/crud.pt:22 ./src/icc/quest/templates/crud.pt:57
 #: ./src/icc/quest/templates/fetch.pt:18 ./src/icc/quest/templates/fetch.pt:47
 msgid "Add new"
 msgstr "Добавить новую запись"
+
+#~ msgid "Institution Types"
+#~ msgstr "Виды учреждений"
+
+#~ msgid "Database Editing"
+#~ msgstr "Редактирование базы данных"
+
+#~ msgid "Short Title"
+#~ msgstr "Краткое название"
+
+#~ msgid "Head Name"
+#~ msgstr "Email руководителя"
+
+#~ msgid "query_email"
+#~ msgstr "Email рассылки"
+
+#~ msgid "phones"
+#~ msgstr "телефоны"
+
+#~ msgid "Form file source"
+#~ msgstr "Исходный файл запроса"
+
+#~ msgid "Ending time"
+#~ msgstr "Время завершения"
 

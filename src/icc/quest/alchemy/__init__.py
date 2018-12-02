@@ -5,8 +5,7 @@ from sqlalchemy import engine_from_config
 from .models import DBSession, Base, Institution, InstitutionType, Query, Mailing
 from .ps_helper import JSONDecoder, JSONEncoder
 import icc.quest.alchemy.schema as schema
-from sqlalchemy.orm import mapper
-from sqlalchemy import event
+from pprint import pprint
 
 
 def includeme(global_config, **settings):
@@ -31,15 +30,9 @@ def includeme(global_config, **settings):
     base_resource.add_to_registry('json_encoder', JSONEncoder)
     base_resource.add_to_registry('json_decoder', JSONDecoder)
 
-    registry = global_config.registry
-
-    def setup_references(mapper, model_class):
-        pass
-        print(mapper, model_class)
-
-    event.listen(mapper, 'mapper_configured', setup_references)
-
     # FIXME: Remove in production
     # This forces colander to setup itself
-    sess = DBSession()
-    sess.query(InstitutionType).first()
+    #sess = DBSession()
+    # sess.query(InstitutionType).first()
+    # pprint("BASE: {}".format(Base.metadata.tables))
+    # pprint("Metadata: {}".format(MetaData().tables)) # Contains nothing

@@ -6,6 +6,7 @@ import icc.quest.alchemy.models as models
 from lxml import etree
 from pkg_resources import resource_filename
 from pyramid.response import FileResponse
+from .alchemy.crud import Attr
 
 import os
 import os.path
@@ -172,12 +173,15 @@ FETCH_SETUP = {
     models.InstitutionType: {
         'id': 'uuid',
         'title': _("Institution types"),
-        'headings': [_('Abbreviation'), _('Title')],
-        'fields': ['abbreviation', 'title']},
+        'fields': [
+            Attr(name='abbreviation', title=_('Abbreviation')),
+            Attr(name='title', title=_('Title'))]},
     models.Institution: {
         'id': 'uuid',
         'title': _("Institutions"),
-        'headings': [_('Short Title'), _('Head Name'),
-                     _('query_email'), _('phones')],
-        'fields': ["short_title", "head_name",
-                   "query_email", "phones"]}}
+        'fields': [
+            Attr(name='short_title', title=_('Short title')),
+            Attr(name='query_email', title=_('Query email')),
+            Attr(name='head_name', title=_('Head name')),
+            Attr(name='phones', title=_('Phones'))]}
+}
