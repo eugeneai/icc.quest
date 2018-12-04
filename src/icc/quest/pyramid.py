@@ -84,5 +84,7 @@ class ViewBase(View):
             P(_('Tables'), route='crud-default',
               icon='glyphicon glyphicon-briefcase'),
             P(_('SACRUD'), route=PYRAMID_SACRUD_HOME,
-              icon='glyphicon glyphicon-oil')
+              icon='glyphicon glyphicon-oil'),
+            P(_('Office'), route='only-office',
+              icon='glyphicon glyphicon-pencil')
         ]
