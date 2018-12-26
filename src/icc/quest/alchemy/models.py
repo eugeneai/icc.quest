@@ -1,10 +1,14 @@
 # SQL Alchemy subsystem
 from colanderalchemy import setup_schema
 from sqlalchemy.orm import mapper
+from sqlalchemy.orm import deferred
 from sqlalchemy import event, MetaData
 from pyramid.security import Allow, Everyone
+from isu.webapp.storage.file.interfaces import IFile
 import csv
 import re
+import mmh3
+import uuid
 
 from sqlalchemy import (
     Column,
@@ -448,6 +452,7 @@ class Mailing(Base):
                      }})
 
 
+@implementer(IFile)
 class File(Base):
     """Represents an uploaded file or a derivative from another file, e.g.,
     form freated from an docx template.
@@ -471,13 +476,13 @@ class File(Base):
                       'widget': deform.widget.HiddenWidget(),
                   }})
 
-    content = Column(LargeBinary, unique=False,
-                     info={'colanderalchemy': {
-                         'typ': deform.FileData(),
-                         'widget': deform.widget.FileUploadWidget(
-                             tmpstore=FileUploadTempStore()),
-                         'title': _("Content of the file")
-                     }})
+    content = deferred(Column(LargeBinary, unique=False,
+                              info={'colanderalchemy': {
+                                  'typ': deform.FileData(),
+                                  'widget': deform.widget.FileUploadWidget(
+                                      tmpstore=FileUploadTempStore()),
+                                  'title': _("Content of the file")
+                              }}))
 
     mime_type = Column(String(length=256),
                        info={'colanderalchemy': {
@@ -485,10 +490,10 @@ class File(Base):
                            'title': _("Mime type")
                        }})
 
-    file_name = Column(String(length=256),
-                       info={'colanderalchemy': {
-                           'title': _("File name")
-                       }})
+    name = Column(String(length=256),
+                  info={'colanderalchemy': {
+                      'title': _("File name")
+                  }})
 
     murmur_hash = Column(UUIDType,  # MurMur3 hash of the content
                          info={'colanderalchemy': {
@@ -501,6 +506,18 @@ class File(Base):
                            'typ': colander.String(),
                            'widget': deform.widget.HiddenWidget(),
                        }})
+
+    def set_content(self, content):
+        self.content = content
+        self.calc_hash()
+
+    def calc_hash(self):
+        self.murmur_hash = uuid.UUID(
+            int=mmh3.hash128(self.content, signed=False))
+
+    @property
+    def key(self):
+        return self.uuid
 
 
 class Table(Base):

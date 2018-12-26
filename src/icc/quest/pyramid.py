@@ -68,8 +68,7 @@ def resource_factory(request):
     return Resource()
 
 
-class ViewBase(View):
-    title = _("Statistic acquisition platform")
+class PanelItemsMixin(object):
 
     @property
     def panel_items(self):
@@ -83,8 +82,14 @@ class ViewBase(View):
             #   icon='glyphicon glyphicon-pencil'),
             P(_('Tables'), route='crud-default',
               icon='glyphicon glyphicon-briefcase'),
+            P(_('Upload'), route='file-upload-form',
+              icon='glyphicon glyphicon-upload'),
             P(_('SACRUD'), route=PYRAMID_SACRUD_HOME,
               icon='glyphicon glyphicon-oil'),
             P(_('Office'), route='only-office',
               icon='glyphicon glyphicon-pencil')
         ]
+
+
+class ViewBase(View, PanelItemsMixin):
+    title = _("Statistic acquisition platform")

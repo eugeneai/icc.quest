@@ -264,7 +264,8 @@ class CRUDView(ViewBase):
         session = ctx.session
 
         result = session.query(ctx.relation).offset(start).limit(length).all()
-        assert (IInstitution.providedBy(result[0]))
+        #assert (IInstitution.providedBy(result[0]))
+        # print(result[0])
         std = self.response(context=result)
         std.update(fields)
         # print('response data ----------')

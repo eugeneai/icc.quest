@@ -10,7 +10,6 @@
       handler=".i18n.add_localizer"
       />
 
-
   <subscriber
       for="pyramid.events.BeforeRender"
       handler="isu.webapp.subscribers.add_base_template"
@@ -24,6 +23,26 @@
   <subscriber
       handler=".views.on_file_upload"
       for="isu.webapp.storage.file.FileUploadEvent"
+      />
+
+  <utility
+      name="test-storage"
+      factory=".alchemy.core.TestFileStorage"
+      />
+
+  <utility
+      name="file-storage"
+      factory=".alchemy.core.AlchemyTableFileStorage"
+      />
+
+  <adapter
+      for="cgi.FieldStorage"
+      factory=".alchemy.core.FieldStorageToIFileAdapter"
+      />
+
+  <adapter
+      for=".alchemy.models.File"
+      factory=".alchemy.core.ModelFileToIFileAdapter"
       />
 
   <route
