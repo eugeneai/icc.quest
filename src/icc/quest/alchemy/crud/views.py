@@ -11,6 +11,8 @@ from collections import namedtuple
 import icc.quest.alchemy.crud.events as events
 from pprint import pprint
 
+from icc.quest.interfaces import IInstitution
+
 import logging
 logger = logging.getLogger("icc.quest")
 _ = MessageFactory("icc.quest")
@@ -262,6 +264,7 @@ class CRUDView(ViewBase):
         session = ctx.session
 
         result = session.query(ctx.relation).offset(start).limit(length).all()
+        assert (IInstitution.providedBy(result[0]))
         std = self.response(context=result)
         std.update(fields)
         # print('response data ----------')

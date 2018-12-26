@@ -41,6 +41,9 @@ from uuid import uuid1 as _uuid
 from zope.i18nmessageid import MessageFactory
 from sacrud import crud_sessionmaker
 
+from zope.interface import implementer
+from icc.quest.interfaces import IInstitution
+
 _ = MessageFactory("icc.quest")
 
 
@@ -67,6 +70,7 @@ REGION = "RU"
 
 
 @generic_repr
+@implementer(IInstitution)
 class InstitutionType(Base):
     __tablename__ = 'institution_types'
 
