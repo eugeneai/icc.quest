@@ -1,17 +1,16 @@
 import logging
-from zope.i18nmessageid import MessageFactory
-from .pyramid import ViewBase
-from .alchemy.crud.views import CRUDView
-import icc.quest.alchemy.models as models
-from lxml import etree
-from pkg_resources import resource_filename
-from pyramid.response import FileResponse
-from .alchemy.crud import Attr
-
 import os
 import os.path
 
-logger = logging.getLogger("icc.quest")
+from lxml import etree
+from pkg_resources import resource_filename
+from pyramid.response import FileResponse
+from zope.i18nmessageid import MessageFactory
+
+import icc.quest.alchemy.models as models
+from .alchemy.crud import Attr
+from .alchemy.crud.views import CRUDView
+from .pyramid import ViewBase
 
 logger = logging.getLogger("icc.quest")
 
@@ -34,7 +33,6 @@ class ApplicationView(ViewBase):
 
     def only_office(self):
         return self.response()
-
 
 
 class TestView(ViewBase):
@@ -159,6 +157,15 @@ class PageView(ViewBase):
         self.storage.save_file(body_file, filename, replace=True)
 
         return self.respjson()
+
+
+# class FileStorageView(file_views.FileStorageView):
+#
+#     def on_upload(self, file):
+#         print("Uploaded file:{}".format(file))
+
+def on_file_upload(e):
+    print("File-upload-event {}".format(e.file))
 
 
 INST_TYPES = None

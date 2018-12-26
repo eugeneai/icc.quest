@@ -21,6 +21,11 @@
       for="pyramid.events.BeforeRender"
       />
 
+  <subscriber
+      handler=".views.on_file_upload"
+      for="isu.webapp.storage.file.FileUploadEvent"
+      />
+
   <route
       name="doc"
       pattern="/doc/*traverse"
