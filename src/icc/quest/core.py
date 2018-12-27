@@ -2,7 +2,7 @@
 
 
 class OnlyOfficeContext(object):
-    def __init__(self, key="default", route="only-office-api"):
+    def __init__(self, key, route):
         self.key = key
         self.route = route
 

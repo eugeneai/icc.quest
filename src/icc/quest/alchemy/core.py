@@ -6,6 +6,7 @@ import pyramid.threadlocal
 from .interfaces import IDataBaseSession
 from .models import File
 import transaction
+import os.path
 
 
 @implementer(IFileStorage)
@@ -53,6 +54,22 @@ class AlchemyTableFileStorage(object):
         sess = self._get_session()
         return sess.query(File).limit(self.limit).all()
 
+    def load(self, key, no_raise=False):
+        sess = self._get_session()
+        file = IFile(sess.query(File).get(key))
+        if file is None:
+            if no_raise:
+                return file
+            else:
+                raise KeyError('no such key')
+        return file
+
+
+def base_ext(filename):
+    b, e = os.path.splitext(filename)
+    e = e[1:]
+    return b, e
+
 
 @implementer(IFile)
 class FieldStorageToIFileAdapter(object):
@@ -72,6 +89,14 @@ class FieldStorageToIFileAdapter(object):
     def key(self):
         return 1
     # TODO: Fake key
+
+    @property
+    def ext(self):
+        return base_ext(self.name)[1]
+
+    @property
+    def base_name(self):
+        return base_ext(self.name)[0]
 
     def set_content(self, content):
         self.content = content
@@ -97,6 +122,14 @@ class ModelFileToIFileAdapter(object):
     @property
     def content(self):
         return self.content.content
+
+    @property
+    def ext(self):
+        return base_ext(self.name)[1]
+
+    @property
+    def base_name(self):
+        return base_ext(self.name)[0]
 
     def set_content(self, content):
         return self.context.set_content(content)

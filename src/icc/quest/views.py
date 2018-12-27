@@ -31,9 +31,6 @@ class ApplicationView(ViewBase):
     def body(self):
         return "<h1>Hello!</h1>"
 
-    def only_office(self):
-        return self.response()
-
 
 class TestView(ViewBase):
     title = 'Test page'

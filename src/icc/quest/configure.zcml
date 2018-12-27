@@ -168,17 +168,5 @@
       renderer="isu.webapp:templates/index.pt"
       />
 
-  <route
-      pattern="/onlyoffice"
-      name="only-office"
-      />
-  <view
-      route_name="only-office"
-      view=".views.ApplicationView"
-      attr="only_office"
-      renderer="icc.quest:templates/only-office.pt"
-      />
-
-
 
 </configure>
