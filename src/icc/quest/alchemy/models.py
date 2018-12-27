@@ -467,7 +467,7 @@ class File(Base):
                                   #         phone
                                   #     ]
                                   # }}
-                                  # 'includes':[column]
+                                  # 'excludes': ['content']
                                   }
 
     uuid = Column(UUIDType, primary_key=True, default=_uuid,
