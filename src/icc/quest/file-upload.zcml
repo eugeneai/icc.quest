@@ -1,0 +1,53 @@
+<configure xmlns="http://pylonshq.com/pyramid">
+
+  <include package="pyramid_zcml" />
+
+
+  <!-- icc.cellula.views -->
+
+  <route
+      name="file-upload-form"
+      pattern="/forms/file-upload"
+      />
+
+  <route
+      name="file-upload"
+      pattern="/api/file-upload"
+      />
+
+  <route
+      name="get-file-list"
+      pattern="/api/get-file-list"
+      />
+
+  <!-- views -->
+  <view
+      route_name="file-upload-form"
+      renderer="isu.webapp:templates/upload-form.pt"
+      request_method="GET"
+      view=".views.FileStorageView"
+      attr="form"
+      />
+
+  <view
+      route_name="get-file-list"
+      renderer="icc.quest:templates/doc_table.pt"
+      view=".views.FileStorageView"
+      attr="files"
+      />
+
+  <view
+      route_name="file-upload"
+      renderer="json"
+      request_method="POST"
+      view=".views.FileStorageView"
+      attr="upload"
+      />
+
+  <!-- static assets -->
+  <static
+      name="/uploader-static/upload"
+      path="isu.webapp:templates/static/upload"
+      />
+
+</configure>

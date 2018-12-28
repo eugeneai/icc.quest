@@ -76,6 +76,7 @@ class FieldStorageToIFileAdapter(object):
     def __init__(self, context):
         self.context = context
         self.set_content(context.file.read())
+        self.key = 'unapplicable'
 
     @property
     def name(self):
@@ -84,11 +85,6 @@ class FieldStorageToIFileAdapter(object):
     @property
     def mime_type(self):
         return self.context.type
-
-    @property
-    def key(self):
-        return 1
-    # TODO: Fake key
 
     @property
     def ext(self):
@@ -121,7 +117,7 @@ class ModelFileToIFileAdapter(object):
 
     @property
     def content(self):
-        return self.content.content
+        return self.context.content
 
     @property
     def ext(self):

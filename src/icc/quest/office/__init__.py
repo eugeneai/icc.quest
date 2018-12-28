@@ -12,4 +12,4 @@ def includeme(global_config, **settings):
 
 
 def configurator(config, **settings):
-    config.load_zcml("icc.quest:configure.zcml")
+    config.load_zcml("icc.quest.office:configure.zcml")

@@ -23,6 +23,7 @@ pyramid_sacrud
 # https://github.com/isu-enterprise/ps_alchemy/archive/master.zip#egg=ps_alchemy
 -e git+https://github.com/isu-enterprise/ps_alchemy#egg=ps_alchemy
 phonenumbers
+requests
 # psycopg2-binary
 https://github.com/psycopg/psycopg2/archive/2_7_6.tar.gz
 

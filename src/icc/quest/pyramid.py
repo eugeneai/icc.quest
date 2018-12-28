@@ -86,8 +86,8 @@ class PanelItemsMixin(object):
               icon='glyphicon glyphicon-upload'),
             P(_('SACRUD'), route=PYRAMID_SACRUD_HOME,
               icon='glyphicon glyphicon-oil'),
-            P(_('Office'), route='only-office',
-              icon='glyphicon glyphicon-pencil')
+            #            P(_('Office'), route='only-office',
+            #              icon='glyphicon glyphicon-pencil')
         ]
 
 

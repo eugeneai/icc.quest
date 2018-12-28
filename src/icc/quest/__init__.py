@@ -1,11 +1,13 @@
 from pkg_resources import resource_filename
 import os
 import logging
+from pyramid.session import SignedCookieSessionFactory
 from sqlalchemy.orm import configure_mappers
 # from __future__ import print_function
 __import__('pkg_resources').declare_namespace(__name__)
 
 logger = logging.getLogger("icc.quest")
+quest_session_factory = SignedCookieSessionFactory('questsecreet')
 
 
 def includeme(global_config, **settings):
@@ -33,6 +35,9 @@ def configurator(config, **settings):
             _name, _path
         ))
 
+    config.set_session_factory(quest_session_factory)
+
     config.load_zcml("icc.quest:configure.zcml")
+    config.load_zcml("icc.quest:file-upload.zcml")
 
     config.set_crud_model_source('icc.quest.alchemy.models')

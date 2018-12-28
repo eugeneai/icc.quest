@@ -3,20 +3,20 @@
 
 
   <route
-      pattern="/app/onlyoffice/edit/{uuid}"
+      pattern="/app/onlyoffice/edit/{name}"
       name="only-office"
       />
 
   <view
       route_name="only-office"
       view=".views.OnlyOfficeView"
-      attr="only_office"
+      attr="app"
       renderer="icc.quest:templates/only-office.pt"
       />
 
   <route
       pattern="/app/onlyoffice/load/{name}"
-      name="app"
+      name="only-office-load"
       />
 
   <view
@@ -27,8 +27,9 @@
       />
 
   <route
-      pattern="/app/onlyoffice/api"
+      pattern="/app/onlyoffice/api/{key}"
       name="only-office-api"
+      request_method="POST"
       />
 
   <view
@@ -36,6 +37,11 @@
       view=".views.OnlyOfficeView"
       attr="api_call"
       renderer="json"
+      />
+
+  <adapter
+      for="requests.Response"
+      factory=".core.RequestsResponseToIFileAdapter"
       />
 
 </configure>

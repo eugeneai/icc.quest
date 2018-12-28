@@ -10,7 +10,8 @@ from zope.i18nmessageid import MessageFactory
 import icc.quest.alchemy.models as models
 from .alchemy.crud import Attr
 from .alchemy.crud.views import CRUDView
-from .pyramid import ViewBase
+from .pyramid import ViewBase, PanelItemsMixin
+import isu.webapp.storage.file as file_mod
 
 logger = logging.getLogger("icc.quest")
 
@@ -156,10 +157,9 @@ class PageView(ViewBase):
         return self.respjson()
 
 
-# class FileStorageView(file_views.FileStorageView):
-#
-#     def on_upload(self, file):
-#         print("Uploaded file:{}".format(file))
+class FileStorageView(file_mod.views.FileStorageView, PanelItemsMixin):
+    pass
+
 
 def on_file_upload(e):
     print("File-upload-event {}".format(e.file))

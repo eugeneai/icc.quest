@@ -9,6 +9,7 @@ import csv
 import re
 import mmh3
 import uuid
+import os.path
 
 from sqlalchemy import (
     Column,
@@ -518,6 +519,14 @@ class File(Base):
     @property
     def key(self):
         return self.uuid
+
+    @property
+    def ext(self):
+        return os.path.splitext(self.name)[1][1:]
+
+    @property
+    def base_name(self):
+        return os.path.splitext(self.name)[0]
 
 
 class Table(Base):
