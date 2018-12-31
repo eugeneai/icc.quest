@@ -4,8 +4,8 @@ import logging
 logger = logging.getLogger("icc.quest")
 
 
-class DOCX2HTMLAdapter:
-    """Clss-adapter of docx document being laizily imported and
+class DOCX2HTML:
+    """Clss-adapter of docx document being lazy imported and 
     converted into HTML tree.
     """
 
@@ -27,6 +27,7 @@ class DOCX2HTMLAdapter:
 
         return self.tree
 
+    @property
     def article(self):
         t = self.lazy_load()
         body = t.xpath("//body")[0]
@@ -42,6 +43,7 @@ class DOCX2HTMLAdapter:
         self.state['article'] = True
         return article
 
+    @property
     def inputs(self):
         tds = self.tree.xpath("//td[re:match(text(), '^:[a-zA-Z0-9_]+')]",
                               namespaces={"re": "http://exslt.org/regular-expressions"})
@@ -92,7 +94,8 @@ class DOCX2HTMLAdapter:
         self.state['inputs'] = True
         return tds
 
-    def as_form(self):
+    @property
+    def form(self):
         self.lazy_load()
         tree_copy = self.tostring(pretty_print=False)
         old_tree = etree.fromstring(tree_copy)
@@ -143,7 +146,7 @@ class DOCX2HTMLAdapter:
         div.append(input)
         # TODO: Add  <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
         cls = input.get('class').split()
-        if not 'form-control' in cls:
+        if 'form-control' not in cls:
             cls.append('form-control')
         input.set('class', ' '.join(cls))
 
