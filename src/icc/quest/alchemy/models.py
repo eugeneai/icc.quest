@@ -563,3 +563,21 @@ class Table(Base):
 # TODO Query Data Tables' first attribute should be uuid,
 # the second must be mailing_uuid referencing Mailing.uuid (one-to-many)
 # as we suppose, that there are forms requiring adding new rows.
+
+
+class TestTable(Base):
+    __tablename__ = "тесты"
+
+    uuid = Column(UUIDType, primary_key=True, default=_uuid,
+                  info={'colanderalchemy': {
+                      'typ': colander.String(),
+                      'widget': deform.widget.HiddenWidget(),
+                  }})
+
+    имя = Column(String(length=255), unique=True,
+                  info={'colanderalchemy': {
+                      # 'typ': colander.String(),
+                      # 'widget': deform.widget.HiddenWidget(),
+                      'title': _('Name of the table in a RDBMS'),
+                  }})
+    
