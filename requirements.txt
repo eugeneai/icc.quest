@@ -25,8 +25,7 @@ pyramid_sacrud
 phonenumbers
 requests
 # psycopg2-binary
-https://github.com/psycopg/psycopg2/archive/2_7_6.tar.gz
-
+https://github.com/psycopg/psycopg2/archive/2_8.tar.gz
 
 
 -e git+https://github.com/isu-enterprise/isu.enterprise#egg=isu.enterprise
@@ -43,4 +42,3 @@ lxml
 #marisa-trie
 #pymorphy2
 pyramid_zcml
-waitress
