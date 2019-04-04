@@ -42,3 +42,4 @@ lxml
 #marisa-trie
 #pymorphy2
 pyramid_zcml
+-e .
