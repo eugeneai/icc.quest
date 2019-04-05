@@ -4,8 +4,8 @@ import logging
 logger = logging.getLogger("icc.quest")
 
 
-class DOCX2HTML:
-    """Clss-adapter of docx document being lazy imported and 
+class DOCX2HTMLAdapter:
+    """Clss-adapter of docx document being lazy imported and
     converted into HTML tree.
     """
 
