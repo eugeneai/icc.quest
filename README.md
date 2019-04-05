@@ -32,7 +32,7 @@ or use container linking with `<TODO>`.
 
 ```shell
 docker pull dpage/pgadmin4
-docker run -p 8089:80  --name=pgadmin-quest --network=quest-network --add-host=postgres:2001:db8:XXXX:Y00Z::2 -e "PGADMIN_DEFAULT_EMAIL=user@example.com" -e "PGADMIN_DEFAULT_PASSWORD=SuperSecret" -d dpage/pgadmin4
+docker run -p 8089:80  --name=pgadmin-quest --network=quest-network  --add-host=postgres:2001:db8:XXXX:Y00Z::2 -e "PGADMIN_DEFAULT_EMAIL=user@example.com" -e  "PGADMIN_DEFAULT_PASSWORD=SuperSecret" --ip6 2001:db8:XXXX:Y00Z::80 -e PGADMIN_ENABLE_TLS=True -p 8443:443 -d --restart=always dpage/pgadmin4
 ```
 
 So, in the login screen at `http://yoursite.example.com:8089` one must login with the provided `user@example.com` and the password.
